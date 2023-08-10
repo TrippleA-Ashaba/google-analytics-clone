@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 	<div class="app-brand demo">
-		<a href="index.html" class="app-brand-link">
+		<a href="{% url 'home' %}" class="app-brand-link">
 			<span class="app-brand-logo demo">
 				<i class="bx bx-globe fs-1"></i>
 			</span>
@@ -19,7 +19,7 @@
 	<ul class="menu-inner py-1">
 		<!-- Dashboard -->
 		<li class="menu-item active">
-			<a href="index.html" class="menu-link">
+			<a href="{% url 'home' %}" class="menu-link">
 				<i class="menu-icon tf-icons bx bx-home-circle"></i>
 				<div data-i18n="Analytics">Dashboard</div>
 			</a>
