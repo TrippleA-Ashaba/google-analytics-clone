@@ -1,6 +1,7 @@
 from django import forms
-from apps.accounts.models import CustomUser
 from django.contrib.auth.hashers import make_password
+
+from apps.accounts.models import CustomUser
 
 
 class SignUpForm(forms.ModelForm):

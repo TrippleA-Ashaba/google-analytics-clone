@@ -1,6 +1,6 @@
 from django.contrib.auth import login
-from django.contrib.auth.hashers import make_password
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
+
 from .forms import SignUpForm
 
 
@@ -14,4 +14,4 @@ def signup(request):
             return redirect("home")
     else:
         form = SignUpForm()
-    return render(request, "signup.html", {"form": form})
+    return render(request, "accounts/signup.html", {"form": form})

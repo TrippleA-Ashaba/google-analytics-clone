@@ -141,9 +141,11 @@
 								<div class="d-flex align-items-end row">
 									<div class="col-sm-7">
 										<div class="card-body">
+											{% if user.is_authenticated %}
 											<h5 class="card-title text-primary">
-												Congratulations John! 🎉
+												Congratulations {{ user.first_name }}! 🎉
 											</h5>
+											{% endif %}
 											<p class="mb-4">
 												You have done
 												<span class="fw-bold">72%</span> more sales today.
