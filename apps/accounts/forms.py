@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.hashers import make_password
-
+from django.contrib.auth.forms import AuthenticationForm
 from apps.accounts.models import CustomUser
 
 
@@ -26,3 +26,7 @@ class SignUpForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class LoginForm(AuthenticationForm):
+    pass
