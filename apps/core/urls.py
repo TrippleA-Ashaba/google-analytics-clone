@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import home, landing_page, business_register, show_businesses
+from .views import business_register, home, landing_page, show_businesses
 
 urlpatterns = [
     path("", landing_page, name="landing_page"),
