@@ -10,6 +10,9 @@ class Business(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = "business"
+
     def __str__(self) -> str:
         return self.name
 
@@ -18,6 +21,9 @@ class Staff(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     business = models.ManyToManyField(Business, related_name="business")
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "staff"
 
     def __str__(self) -> str:
         return self.user.get_full_name()

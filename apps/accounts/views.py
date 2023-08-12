@@ -5,16 +5,16 @@ from django.views import View
 from .forms import LoginForm, SignUpForm
 
 
-def signup(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        print(form.data)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect("home")
+# def signup(request):
+#     if request.method == "POST":
+#         form = SignUpForm(request.POST)
+#         print(form.data)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return redirect("home")
 
-    return render(request, "accounts/signup.html")
+#     return render(request, "accounts/signup.html")
 
 
 class SignUpView(View):

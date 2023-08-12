@@ -48,7 +48,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
-        # db_table = "user"
+        db_table = "user"
         pass
 
     def __str__(self):
