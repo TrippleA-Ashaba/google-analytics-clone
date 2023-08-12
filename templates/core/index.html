@@ -32,7 +32,7 @@
 										<div class="card-body">
 											{% if user.is_authenticated %}
 											<h5 class="card-title text-primary">
-												Congratulations {{ user.first_name }}! 🎉
+												Congratulations {{ user.first_name|capfirst }}! 🎉
 											</h5>
 											{% endif %}
 											<p class="mb-4">
