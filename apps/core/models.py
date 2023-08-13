@@ -7,23 +7,31 @@ from apps.accounts.models import CustomUser
 class Business(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
     business_sector = models.CharField(max_length=50, blank=False, null=False)
-    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = "business"
 
     def __str__(self) -> str:
         return self.name
 
 
+class Property(models.Model):
+    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, blank=False, null=False)
+    domain = models.URLField(max_length=225)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=False)
+
+
+class StaffRoles(models.TextChoices):
+    ADMIN = "admin", "Admin"
+    VIEWER = "viewer", "Viewer"
+    EDITOR = "editor", "Editor"
+
+
 class Staff(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    business = models.ManyToManyField(Business, related_name="business")
+    property = models.ManyToManyField(Property, related_name="property")
+    role = models.CharField(max_length=50, choices=StaffRoles.choices)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = "staff"
 
     def __str__(self) -> str:
         return self.user.get_full_name()
