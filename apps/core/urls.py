@@ -6,6 +6,7 @@ from .views import (
     landing_page,
     show_businesses,
     staff_register,
+    show_staff,
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path("add-business/", business_register, name="business_register"),
     path("businesses/", show_businesses, name="show_businesses"),
     path("staff_register/", staff_register, name="staff_register"),
+    path("staff/", show_staff, name="show_staff"),
 ]

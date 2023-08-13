@@ -1,10 +1,13 @@
 from django.db import models
 
-from apps.accounts.models import CustomUser
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 # Create your models here.
 class Business(models.Model):
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, blank=False, null=False)
     business_sector = models.CharField(max_length=50, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,7 +31,7 @@ class StaffRoles(models.TextChoices):
 
 
 class Staff(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     property = models.ManyToManyField(Property, related_name="property")
     role = models.CharField(max_length=50, choices=StaffRoles.choices)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -43,11 +43,7 @@
 						<div data-i18n="Without navbar">Add Business</div>
 					</a>
 				</li>
-				<li class="menu-item">
-					<a href="{% url 'staff_register' %}" class="menu-link">
-						<div data-i18n="Container">Add Staff</div>
-					</a>
-				</li>
+
 				<!-- <li class="menu-item">
 					<a href="layouts-fluid.html" class="menu-link">
 						<div data-i18n="Fluid">Fluid</div>
@@ -61,18 +57,23 @@
 			</ul>
 		</li>
 
-		<!-- <li class="menu-header small text-uppercase">
-			<span class="menu-header-text">Pages</span>
+		<li class="menu-header small text-uppercase">
+			<span class="menu-header-text">Accounts</span>
 		</li>
 		<li class="menu-item">
 			<a href="javascript:void(0);" class="menu-link menu-toggle">
-				<i class="menu-icon tf-icons bx bx-dock-top"></i>
+				<i class="menu-icon tf-icons bx bx-user"></i>
 				<div data-i18n="Account Settings">Account Settings</div>
 			</a>
 			<ul class="menu-sub">
 				<li class="menu-item">
-					<a href="pages-account-settings-account.html" class="menu-link">
-						<div data-i18n="Account">Account</div>
+					<a href="{% url 'show_staff' %}" class="menu-link">
+						<div data-i18n="Container">Staff</div>
+					</a>
+				</li>
+				<li class="menu-item">
+					<a href="{% url 'staff_register' %}" class="menu-link">
+						<div data-i18n="Container">Add Staff</div>
 					</a>
 				</li>
 				<li class="menu-item">
@@ -87,6 +88,7 @@
 				</li>
 			</ul>
 		</li>
+		<!--
 		<li class="menu-item">
 			<a href="javascript:void(0);" class="menu-link menu-toggle">
 				<i class="menu-icon tf-icons bx bx-lock-open-alt"></i>

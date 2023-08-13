@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 <!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
 {% block content %}
 <!-- sidebar -->
 {% include 'partials/sidebar.html' %}
@@ -35,53 +37,7 @@
 							</div>
 							<div class="card-body">
 								<form action="" method="post">
-									{% csrf_token %}
-									<div class="row mb-3">
-										<label class="col-sm-2 col-form-label" for="id_name"
-											>Business Name</label
-										>
-										<div class="col-sm-10">
-											<div class="input-group input-group-merge">
-												<span
-													id="basic-icon-default-fullname2"
-													class="input-group-text"
-													><i class="bx bx-buildings"></i
-												></span>
-												<input
-													type="text"
-													class="form-control"
-													id="id_name"
-													name="name"
-													placeholder="ACME Inc."
-													aria-label="ACME Inc."
-													aria-describedby="basic-icon-default-company" />
-											</div>
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label
-											class="col-sm-2 col-form-label"
-											for="id_business_sector"
-											>Business Sector</label
-										>
-										<div class="col-sm-10">
-											<div class="input-group input-group-merge">
-												<span
-													id="basic-icon-default-company2"
-													class="input-group-text"
-													><i class="bx bx-sitemap"></i
-												></span>
-												<input
-													type="text"
-													id="id_business_sector"
-													class="form-control"
-													placeholder="Education"
-													aria-label="ACME Inc."
-													name="business_sector"
-													aria-describedby="basic-icon-default-company2" />
-											</div>
-										</div>
-									</div>
+									{% csrf_token %} {{form|crispy}}
 
 									<div class="row justify-content-end">
 										<div class="col-sm-10">

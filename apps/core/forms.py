@@ -6,7 +6,7 @@ from .models import Business, Staff
 class BusinessForm(forms.ModelForm):
     class Meta:
         model = Business
-        exclude = ("is_active",)
+        exclude = ("created_by",)
 
 
 class StaffForm(forms.ModelForm):
