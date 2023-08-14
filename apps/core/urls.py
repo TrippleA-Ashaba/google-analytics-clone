@@ -7,6 +7,8 @@ from .views import (
     show_businesses,
     staff_register,
     show_staff,
+    property_register,
+    show_properties,
 )
 
 urlpatterns = [
@@ -16,4 +18,6 @@ urlpatterns = [
     path("businesses/", show_businesses, name="show_businesses"),
     path("staff_register/", staff_register, name="staff_register"),
     path("staff/", show_staff, name="show_staff"),
+    path("property_register/", property_register, name="property_register"),
+    path("properties/", show_properties, name="show_properties"),
 ]

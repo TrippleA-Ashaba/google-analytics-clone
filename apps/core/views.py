@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 
 from apps.accounts.models import CustomUser
 
-from .forms import BusinessForm, StaffForm
+from .forms import BusinessForm, StaffForm, PropertyForm
 from .models import Business, Property, Staff
 
 # Create your views here.
@@ -23,6 +23,9 @@ def home(request):
     return render(request, "core/index.html")
 
 
+# ==================== Business ================================
+
+
 @login_required
 def business_register(request):
     user = request.user
@@ -40,9 +43,36 @@ def business_register(request):
 
 @login_required
 def show_businesses(request):
-    businesses = Business.objects.all()
+    user = request.user
+    businesses = Business.objects.filter(created_by=user)
     context = {"businesses": businesses}
     return render(request, "core/businesses.html", context)
+
+
+# ============================= Property ==============================
+
+
+@login_required
+def property_register(request):
+    user = request.user
+    form = PropertyForm(user)
+    if request.method == "POST":
+        form = PropertyForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect("show_properties")
+    return render(request, "core/property_register.html", {"form": form})
+
+
+@login_required
+def show_properties(request):
+    user = request.user
+    properties = Property.objects.filter(business__created_by=user)
+    context = {"properties": properties}
+    return render(request, "core/properties.html", context)
+
+
+# =========================== Staff =====================================
 
 
 def staff_register(request):
