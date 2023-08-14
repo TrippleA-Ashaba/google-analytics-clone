@@ -46,48 +46,38 @@
 									<tr>
 										<td>
 											<i class="fab fa-angular fa-lg text-danger me-3"></i>
-											<strong>{{ property.name }}</strong>
+											<strong
+												><a href="{% url 'property_detail' property.id %}"
+													>{{ property.name }}</a
+												></strong
+											>
 										</td>
 										<td>{{ property.domain }}</td>
 										<td>{{ property.business }}</td>
-
 										<td>
+											{% if property.staff.all %}
 											<ul
 												class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+												{% for staff in property.staff.all %}
 												<li
 													data-bs-toggle="tooltip"
 													data-popup="tooltip-custom"
 													data-bs-placement="top"
 													class="avatar avatar-xs pull-up"
-													title="Lilian Fuller">
+													title="{{staff}}">
 													<img
-														src="{% static '/assets/img/avatars/5.png' %}"
+														src="{% static '/assets/img/avatars/' %}{{images|random}}.png"
 														alt="Avatar"
 														class="rounded-circle" />
 												</li>
-												<li
-													data-bs-toggle="tooltip"
-													data-popup="tooltip-custom"
-													data-bs-placement="top"
-													class="avatar avatar-xs pull-up"
-													title="Sophia Wilkerson">
-													<img
-														src="{% static '/assets/img/avatars/6.png' %}"
-														alt="Avatar"
-														class="rounded-circle" />
-												</li>
-												<li
-													data-bs-toggle="tooltip"
-													data-popup="tooltip-custom"
-													data-bs-placement="top"
-													class="avatar avatar-xs pull-up"
-													title="Christina Parker">
-													<img
-														src="{% static '/assets/img/avatars/7.png' %}"
-														alt="Avatar"
-														class="rounded-circle" />
-												</li>
+
+												{% endfor %}
 											</ul>
+											{% else %}
+											<!--  -->
+											None
+											<!--  -->
+											{% endif %}
 										</td>
 										{% if property.is_active %}
 										<td>
@@ -130,7 +120,8 @@
 					</div>
 					<!--/ Hoverable Table rows -->
 					<div class="my-5 d-flex justify-content-end">
-						<a class="btn btn-secondary" href="{% url 'property_register' %}"
+						<a class="btn btn-secondary" href="{% url 'staff_register' %}">Add Staff</a>
+						<a class="btn btn-primary mx-3" href="{% url 'property_register' %}"
 							>Add New Property</a
 						>
 					</div>

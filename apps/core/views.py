@@ -5,6 +5,8 @@ from apps.accounts.models import CustomUser
 
 from .forms import BusinessForm, StaffForm, PropertyForm
 from .models import Business, Property, Staff
+from django.db import IntegrityError
+from django.contrib import messages
 
 # Create your views here.
 
@@ -67,27 +69,31 @@ def property_register(request):
 @login_required
 def show_properties(request):
     user = request.user
+    images = list(range(1, 11))
     properties = Property.objects.filter(business__created_by=user)
-    context = {"properties": properties}
+    context = {"properties": properties, "images": images}
     return render(request, "core/properties.html", context)
+
+
+@login_required
+def property_detail(request, id):
+    property = Property.objects.get(id=id)
+    context = {"property": property}
+    return render(request, "core/property_detail.html", context)
 
 
 # =========================== Staff =====================================
 
 
+@login_required
 def staff_register(request):
-    form = StaffForm()
+    user = request.user
     if request.method == "POST":
-        form = StaffForm(request.POST)
+        form = StaffForm(user, request.POST)
         if form.is_valid():
             form.save()
-        return redirect("show_staff")
+            return redirect("show_properties")
 
+    form = StaffForm(user)
     context = {"form": form}
     return render(request, "core/staff_register.html", context)
-
-
-def show_staff(request):
-    staff = Staff.objects.all()
-    context = {"staff": staff}
-    return render(request, "core/staff.html", context)

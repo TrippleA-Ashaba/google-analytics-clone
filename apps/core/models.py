@@ -28,6 +28,9 @@ class Property(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class StaffRoles(models.TextChoices):
     ADMIN = "admin", "Admin"
@@ -36,10 +39,15 @@ class StaffRoles(models.TextChoices):
 
 
 class Staff(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    property = models.ManyToManyField(Property, related_name="property")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    property = models.ForeignKey(
+        Property, related_name="staff", on_delete=models.CASCADE
+    )
     role = models.CharField(max_length=50, choices=StaffRoles.choices)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "property")
 
     def __str__(self) -> str:
         return self.user.get_full_name()

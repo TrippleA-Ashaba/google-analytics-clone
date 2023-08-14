@@ -23,3 +23,9 @@ class StaffForm(forms.ModelForm):
     class Meta:
         model = Staff
         fields = "__all__"
+
+    def __init__(self, user, *args, **kwargs):
+        super(StaffForm, self).__init__(*args, **kwargs)
+        self.fields["property"].queryset = Property.objects.filter(
+            business__created_by=user
+        )
