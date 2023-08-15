@@ -28,13 +28,16 @@
 				<div class="container-xxl flex-grow-1 container-p-y">
 					<!-- Hoverable Table rows -->
 					<div class="card">
-						<h5 class="card-header">Your Current Businesses</h5>
+						<h5 class="card-header">Your Staff</h5>
 						<div class="table-responsive text-nowrap">
+							{{staff}}
 							<table class="table table-hover">
 								<thead>
 									<tr>
 										<th>Business</th>
 										<th>Sector</th>
+										<th>Staff</th>
+										<th>Status</th>
 										<th>Actions</th>
 									</tr>
 								</thead>
@@ -47,6 +50,55 @@
 										</td>
 										<td>{{ business.business_sector }}</td>
 										<td>
+											<ul
+												class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+												<li
+													data-bs-toggle="tooltip"
+													data-popup="tooltip-custom"
+													data-bs-placement="top"
+													class="avatar avatar-xs pull-up"
+													title="Lilian Fuller">
+													<img
+														src="{% static '/assets/img/avatars/5.png' %}"
+														alt="Avatar"
+														class="rounded-circle" />
+												</li>
+												<li
+													data-bs-toggle="tooltip"
+													data-popup="tooltip-custom"
+													data-bs-placement="top"
+													class="avatar avatar-xs pull-up"
+													title="Sophia Wilkerson">
+													<img
+														src="{% static '/assets/img/avatars/6.png' %}"
+														alt="Avatar"
+														class="rounded-circle" />
+												</li>
+												<li
+													data-bs-toggle="tooltip"
+													data-popup="tooltip-custom"
+													data-bs-placement="top"
+													class="avatar avatar-xs pull-up"
+													title="Christina Parker">
+													<img
+														src="{% static '/assets/img/avatars/7.png' %}"
+														alt="Avatar"
+														class="rounded-circle" />
+												</li>
+											</ul>
+										</td>
+										{% if business.is_active %}
+										<td>
+											<span class="badge bg-label-primary me-1">Active</span>
+										</td>
+										{% else %}
+										<td>
+											<span class="badge bg-label-warning me-1"
+												>Disabled</span
+											>
+										</td>
+										{% endif %}
+										<td>
 											<div class="dropdown">
 												<button
 													type="button"
@@ -57,12 +109,12 @@
 												<div class="dropdown-menu">
 													<a
 														class="dropdown-item"
-														href="{% url 'edit_business' business.id %}"
+														href="javascript:void(0);"
 														><i class="bx bx-edit-alt me-1"></i> Edit</a
 													>
 													<a
 														class="dropdown-item"
-														href="{% url 'delete_business' business.id %}"
+														href="javascript:void(0);"
 														><i class="bx bx-trash me-1"></i> Delete</a
 													>
 												</div>
@@ -75,11 +127,6 @@
 						</div>
 					</div>
 					<!--/ Hoverable Table rows -->
-					<div class="my-5 d-flex justify-content-end">
-						<a class="btn btn-secondary" href="{% url 'business_register' %}"
-							>Add New Business</a
-						>
-					</div>
 				</div>
 			</div>
 		</div>

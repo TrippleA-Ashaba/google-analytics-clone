@@ -5,3 +5,4 @@ db.sqlite3
 settings/settings_dev.py
 
 *__pycache__
+*migrations
