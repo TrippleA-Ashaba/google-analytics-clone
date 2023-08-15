@@ -32,17 +32,36 @@
 						<div class="card mb-4">
 							<div
 								class="card-header d-flex align-items-center justify-content-between">
-								<h1 class="mb-0">{{property.name}}</h1>
-								<small class="text-muted float-end"></small>
+								<h1 class="mb-0 fs-4">{{property.name}}</h1>
+								<small class="text-muted float-end"
+									>Business: {{property.business}}</small
+								>
 							</div>
 							<div class="card-body">
-								<h4>Business: {{property.business}}</h4>
-								<p>Staff:</p>
-								<ul>
-									{% for staff in property.staff.all %}
-									<li>{{staff}}</li>
-									{% endfor %}
-								</ul>
+								<div class="row">
+									<div class="col-lg-6 mb-4 mb-xl-0">
+										<small class="text-light fw-semibold">Staff</small>
+										<div class="demo-inline-spacing mt-3">
+											<ol class="list-group list-group-numbered">
+												{% for staff in property.staff.all %}
+												<li class="list-group-item">
+													{{staff}} ({{staff.role}})
+													<a
+														class="mx-3 btn btn-xs btn-secondary"
+														href="{% url 'edit_staff' staff.id %}"
+														>Edit</a
+													>
+													<a
+														class="mx-3 btn btn-xs btn-danger"
+														href="{% url 'remove_staff' staff.id %}"
+														>Remove</a
+													>
+												</li>
+												{% endfor %}
+											</ol>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

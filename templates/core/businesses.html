@@ -35,7 +35,7 @@
 									<tr>
 										<th>Business</th>
 										<th>Sector</th>
-										<th>Staff</th>
+										<th>Actions</th>
 									</tr>
 								</thead>
 								<tbody class="table-border-bottom-0">
@@ -57,12 +57,12 @@
 												<div class="dropdown-menu">
 													<a
 														class="dropdown-item"
-														href="javascript:void(0);"
+														href="{% url 'edit_business' business.id %}"
 														><i class="bx bx-edit-alt me-1"></i> Edit</a
 													>
 													<a
 														class="dropdown-item"
-														href="javascript:void(0);"
+														href="{% url 'delete_business' business.id %}"
 														><i class="bx bx-trash me-1"></i> Delete</a
 													>
 												</div>

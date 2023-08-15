@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 <!--  -->
+{% load static %}
+<!--  -->
 {% load crispy_forms_tags %}
 <!--  -->
 {% block content %}
-<!-- sidebar -->
-{% include 'partials/sidebar.html' %}
 <!--  -->
 
 <!-- Layout wrapper -->
@@ -28,27 +28,26 @@
 				<!-- Content -->
 
 				<div class="container-xxl flex-grow-1 container-p-y">
-					<div class="col-xxl">
-						<div class="card mb-4">
-							<div
-								class="card-header d-flex align-items-center justify-content-between">
-								<h5 class="mb-0">Add Staff Member</h5>
-								<small class="text-muted float-end"></small>
-							</div>
-							<div class="card-body">
-								<form action="" method="post">
-									{% csrf_token %} {{form|crispy}}
-									<div class="col-sm-10">
-										<button type="submit" class="btn btn-primary">Save</button>
-									</div>
-								</form>
-							</div>
+					<!-- Hoverable Table rows -->
+					<div class="card">
+						<h5 class="card-header">Your Current Property</h5>
+						<div class="card-body">
+							<form action="" method="post">
+								{% csrf_token %} {{form|crispy}}
+								<button class="btn btn-primary" type="submit">Save</button>
+								<button class="btn btn-secondary" type="reset">Reset</button>
+							</form>
 						</div>
+					</div>
+					<!--/ Hoverable Table rows -->
+					<div class="my-5 d-flex justify-content-end">
+						<a class="btn btn-secondary" href="{% url 'business_register' %}"
+							>Add New Business</a
+						>
 					</div>
 				</div>
 			</div>
-			<!--  -->
-			{% endblock %}
 		</div>
 	</div>
 </div>
+{% endblock %}
