@@ -46,16 +46,20 @@
 												{% for staff in property.staff.all %}
 												<li class="list-group-item">
 													{{staff}} ({{staff.role}})
+
+													<!--  -->
+													{% if request.user == property_creator %}
 													<a
-														class="mx-3 btn btn-xs btn-secondary"
-														href="{% url 'edit_staff' staff.id %}"
-														>Edit</a
-													>
+														class="mx-3 btn btn-sm btn-outline-secondary btn-icon"
+														href="{% url 'edit_staff' staff.id %}">
+														<i class="bx bxs-edit"></i>
+													</a>
 													<a
-														class="mx-3 btn btn-xs btn-danger"
+														class="mx-3 btn btn-sm btn-outline-danger btn-icon"
 														href="{% url 'remove_staff' staff.id %}"
-														>Remove</a
-													>
+														><i class="bx bx-trash"></i
+													></a>
+													{% endif %}
 												</li>
 												{% endfor %}
 											</ol>

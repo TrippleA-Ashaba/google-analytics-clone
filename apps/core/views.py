@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
 from apps.accounts.models import CustomUser
 
 from .forms import BusinessForm, StaffForm, PropertyForm
@@ -98,7 +98,8 @@ def show_properties(request):
 @login_required
 def property_detail(request, id):
     property = get_object_or_404(Property, id=id)
-    context = {"property": property}
+    property_creator = property.business.created_by
+    context = {"property": property, "property_creator": property_creator}
     return render(request, "core/property_detail.html", context)
 
 
@@ -107,12 +108,15 @@ def edit_property(request, id):
     user = request.user
     property = get_object_or_404(Property, id=id, business__created_by=user)
     form = PropertyForm(user=user, instance=property)
+
     if request.method == "POST":
         form = PropertyForm(user, request.POST, instance=property)
         if form.is_valid():
             form.save()
             return redirect("show_properties")
-    return render(request, "core/property_edit.html", {"form": form})
+
+    context = {"form": form}
+    return render(request, "core/property_edit.html", context)
 
 
 @login_required
@@ -121,6 +125,13 @@ def delete_property(request, id):
     property = get_object_or_404(Property, id=id, business__created_by=user)
     property.delete()
     return redirect("show_properties")
+
+
+@login_required
+def shared_properties(request):
+    properties = Property.objects.filter(staff__user=request.user)
+    context = {"properties": properties}
+    return render(request, "core/shared_properties.html", context)
 
 
 # =========================== Staff =====================================
