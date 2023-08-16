@@ -11,13 +11,6 @@ class Business(models.Model):
     business_sector = models.CharField(max_length=50, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        permissions = [
-            ("can_view_business", "Can view business"),
-            ("can_edit_business", "Can edit business"),
-            ("can_delete_business", "Can delete business"),
-        ]
-
     def __str__(self) -> str:
         return self.name
 
@@ -34,12 +27,6 @@ class Property(models.Model):
     is_active = models.BooleanField(default=False)
 
     class Meta:
-        permissions = [
-            ("can_view_property", "Can view property"),
-            ("can_edit_property", "Can edit property"),
-            ("can_delete_property", "Can delete property"),
-        ]
-
         verbose_name_plural = "Properties"
 
     def __str__(self) -> str:
@@ -47,13 +34,8 @@ class Property(models.Model):
 
 
 class StaffRoles(models.TextChoices):
-    ADMIN = "admin", "Admin"
     VIEWER = "viewer", "Viewer"
     EDITOR = "editor", "Editor"
-
-    class Meta:
-        verbose_name = "Staff Role"
-        verbose_name_plural = "Staff Roles"
 
 
 class Staff(models.Model):

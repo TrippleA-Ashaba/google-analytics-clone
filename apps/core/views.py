@@ -1,44 +1,11 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.contrib.auth.models import Permission
+
 from .forms import BusinessForm, PropertyForm, StaffForm
-from .models import Business, Property, Staff, StaffRoles
-from django.contrib import messages
+from .models import Business, Property, Staff
 
 # Create your views here.
-
-
-@receiver(post_save, sender=Staff)
-def assign_permissions_to_staff(sender, instance, created, **kwargs):
-    if created:
-        role = instance.role
-        user = instance.user
-
-        if role == StaffRoles.ADMIN:
-            permissions = [
-                "can_view_business",
-                "can_edit_business",
-                "can_delete_business",
-                "can_view_property",
-                "can_edit_property",
-                "can_delete_property",
-            ]
-        elif role == StaffRoles.VIEWER:
-            permissions = [
-                "can_view_business",
-                "can_view_property",
-            ]
-        elif role == StaffRoles.EDITOR:
-            permissions = [
-                "can_view_business",
-                "can_edit_property",
-            ]
-
-        for permission_codename in permissions:
-            permission = Permission.objects.get(codename=permission_codename)
-            user.user_permissions.add(permission)
 
 
 def landing_page(request):
@@ -144,9 +111,24 @@ def show_properties(request):
 
 @login_required
 def property_detail(request, id):
+    user = request.user
     property = get_object_or_404(Property, id=id)
     property_creator = property.business.created_by
-    context = {"property": property, "property_creator": property_creator}
+
+    is_editor = False
+    try:
+        staff = Staff.objects.get(user=user, property=property)
+    except Staff.DoesNotExist:
+        staff = None
+    print(staff)
+    if staff and staff.role == "editor":
+        is_editor = True
+
+    context = {
+        "property": property,
+        "property_creator": property_creator,
+        "is_editor": is_editor,
+    }
     return render(request, "core/property_detail.html", context)
 
 

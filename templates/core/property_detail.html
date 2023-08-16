@@ -34,7 +34,7 @@
 										{% endif %}
 
 										<!--  -->
-										{% if request.user == property_creator %}
+										{% if request.user == property_creator or is_editor %}
 										<a
 											class="mx-3 btn btn-sm btn-outline-secondary btn-icon"
 											href="{% url 'edit_staff' staff.id %}">
@@ -45,6 +45,7 @@
 											href="{% url 'remove_staff' staff.id %}"
 											><i class="bx bx-trash"></i
 										></a>
+
 										{% endif %}
 									</li>
 									{% endfor %}
