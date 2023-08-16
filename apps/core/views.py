@@ -1,11 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, get_object_or_404, get_list_or_404
-from apps.accounts.models import CustomUser
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import BusinessForm, StaffForm, PropertyForm
+from .forms import BusinessForm, PropertyForm, StaffForm
 from .models import Business, Property, Staff
-from django.db import IntegrityError
-from django.contrib import messages
 
 # Create your views here.
 
@@ -170,5 +167,4 @@ def remove_staff(request, id):
     user = request.user
     staff = get_object_or_404(Staff, id=id, property__business__created_by=user)
     staff.delete()
-    messages.success(request, "Staff member deleted successfully.")
     return redirect("property_detail", id=staff.property.id)

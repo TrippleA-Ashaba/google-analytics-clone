@@ -2,20 +2,20 @@ from django.urls import path
 
 from .views import (
     business_register,
-    home,
-    landing_page,
-    show_businesses,
-    staff_register,
-    property_register,
-    show_properties,
-    property_detail,
-    delete_property,
     delete_business,
+    delete_property,
     edit_business,
     edit_property,
-    remove_staff,
     edit_staff,
+    home,
+    landing_page,
+    property_detail,
+    property_register,
+    remove_staff,
     shared_properties,
+    show_businesses,
+    show_properties,
+    staff_register,
 )
 
 urlpatterns = [

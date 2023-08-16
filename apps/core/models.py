@@ -1,7 +1,5 @@
-from django.db import models
-
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db import models
 
 User = get_user_model()
 

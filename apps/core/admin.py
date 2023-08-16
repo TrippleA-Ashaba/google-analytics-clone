@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Business, Staff, Property
+from .models import Business, Property, Staff
 
 # Register your models here.
 admin.site.register(Business)

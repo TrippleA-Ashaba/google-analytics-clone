@@ -46,6 +46,14 @@
 												{% for staff in property.staff.all %}
 												<li class="list-group-item">
 													{{staff}} ({{staff.role}})
+													<!--  -->
+													{% if request.user == staff.user %}
+													<!--  -->
+													<span class="mx-3 text-success"
+														><i class="bx bx-user-circle"></i
+													></span>
+													<!--  -->
+													{% endif %}
 
 													<!--  -->
 													{% if request.user == property_creator %}
