@@ -1,7 +1,5 @@
-from django.db import models
-
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db import models
 
 User = get_user_model()
 
@@ -28,12 +26,14 @@ class Property(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name_plural = "Properties"
+
     def __str__(self) -> str:
         return self.name
 
 
 class StaffRoles(models.TextChoices):
-    ADMIN = "admin", "Admin"
     VIEWER = "viewer", "Viewer"
     EDITOR = "editor", "Editor"
 

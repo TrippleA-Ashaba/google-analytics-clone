@@ -1,11 +1,9 @@
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views import View
-
-from .forms import LoginForm, SignUpForm
 from django.views.generic import CreateView
 
+from .forms import LoginForm, SignUpForm
 
 # def signup(request):
 #     if request.method == "POST":

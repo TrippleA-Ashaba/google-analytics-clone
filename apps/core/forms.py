@@ -1,6 +1,9 @@
 from django import forms
+from django.contrib.auth import get_user_model
 
-from .models import Business, Staff, Property
+from .models import Business, Property, Staff
+
+User = get_user_model()
 
 
 class BusinessForm(forms.ModelForm):
@@ -29,3 +32,4 @@ class StaffForm(forms.ModelForm):
         self.fields["property"].queryset = Property.objects.filter(
             business__created_by=user
         )
+        self.fields["user"].queryset = User.objects.exclude(pk=user.pk)
