@@ -1,10 +1,44 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import Permission
 from .forms import BusinessForm, PropertyForm, StaffForm
-from .models import Business, Property, Staff
+from .models import Business, Property, Staff, StaffRoles
+from django.contrib import messages
 
 # Create your views here.
+
+
+@receiver(post_save, sender=Staff)
+def assign_permissions_to_staff(sender, instance, created, **kwargs):
+    if created:
+        role = instance.role
+        user = instance.user
+
+        if role == StaffRoles.ADMIN:
+            permissions = [
+                "can_view_business",
+                "can_edit_business",
+                "can_delete_business",
+                "can_view_property",
+                "can_edit_property",
+                "can_delete_property",
+            ]
+        elif role == StaffRoles.VIEWER:
+            permissions = [
+                "can_view_business",
+                "can_view_property",
+            ]
+        elif role == StaffRoles.EDITOR:
+            permissions = [
+                "can_view_business",
+                "can_edit_property",
+            ]
+
+        for permission_codename in permissions:
+            permission = Permission.objects.get(codename=permission_codename)
+            user.user_permissions.add(permission)
 
 
 def landing_page(request):
@@ -35,6 +69,11 @@ def business_register(request):
             business = form.save(commit=False)
             business.created_by = user
             business.save()
+            messages.success(
+                request,
+                f"{business} edited successfully",
+                extra_tags="bg-success",
+            )
             return redirect("property_register")
     return render(request, "core/business_register.html", {"form": form})
 
@@ -48,6 +87,11 @@ def edit_business(request, id):
         form = BusinessForm(request.POST, instance=business)
         if form.is_valid():
             form.save()
+            messages.success(
+                request,
+                f"{business} edited successfully",
+                extra_tags="bg-success",
+            )
             return redirect("show_businesses")
     return render(request, "core/business_edit.html", {"form": form})
 
@@ -78,7 +122,13 @@ def property_register(request):
     if request.method == "POST":
         form = PropertyForm(user, request.POST)
         if form.is_valid():
+            property = form.cleaned_data["name"]
             form.save()
+            messages.success(
+                request,
+                f"{property} added successfully",
+                extra_tags="bg-success",
+            )
         return redirect("show_properties")
     return render(request, "core/property_register.html", {"form": form})
 
@@ -110,6 +160,9 @@ def edit_property(request, id):
         form = PropertyForm(user, request.POST, instance=property)
         if form.is_valid():
             form.save()
+            messages.success(
+                request, "Property edited successfully", extra_tags="bg-success"
+            )
             return redirect("show_properties")
 
     context = {"form": form}
@@ -121,6 +174,7 @@ def delete_property(request, id):
     user = request.user
     property = get_object_or_404(Property, id=id, business__created_by=user)
     property.delete()
+    messages.success(request, "Property deleted successfully", extra_tags="bg-success")
     return redirect("show_properties")
 
 
@@ -141,6 +195,9 @@ def staff_register(request):
         form = StaffForm(user, request.POST)
         if form.is_valid():
             form.save()
+            messages.success(
+                request, "Staff added successfully", extra_tags="bg-success"
+            )
             return redirect("show_properties")
 
     form = StaffForm(user)
@@ -156,6 +213,9 @@ def edit_staff(request, id):
         form = StaffForm(user, request.POST, instance=staff)
         if form.is_valid():
             form.save()
+            messages.success(
+                request, "Staff edited successfully", extra_tags="bg-success"
+            )
             return redirect("property_detail", id=staff.property.id)
     form = StaffForm(user, instance=staff)
     context = {"form": form}
@@ -167,4 +227,5 @@ def remove_staff(request, id):
     user = request.user
     staff = get_object_or_404(Staff, id=id, property__business__created_by=user)
     staff.delete()
+    messages.success(request, "Staff Removed successfully", extra_tags="bg-success")
     return redirect("property_detail", id=staff.property.id)
