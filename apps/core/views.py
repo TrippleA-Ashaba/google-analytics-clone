@@ -42,7 +42,7 @@ def business_register(request):
                 extra_tags="bg-success",
             )
             return redirect("property_register")
-    return render(request, "core/business_register.html", {"form": form})
+    return render(request, "core/businesses.html", {"form": form})
 
 
 @login_required
@@ -67,7 +67,9 @@ def edit_business(request, id):
 def show_businesses(request):
     user = request.user
     businesses = Business.objects.filter(created_by=user)
-    context = {"businesses": businesses}
+    form = BusinessForm()
+
+    context = {"businesses": businesses, "form": form}
     return render(request, "core/businesses.html", context)
 
 
