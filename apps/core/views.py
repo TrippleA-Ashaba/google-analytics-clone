@@ -60,7 +60,7 @@ def edit_business(request, id):
                 extra_tags="bg-success",
             )
             return redirect("show_businesses")
-    return render(request, "core/business_edit.html", {"form": form})
+    return render(request, "partials/form.html", {"form": form})
 
 
 @login_required
@@ -76,9 +76,13 @@ def show_businesses(request):
 @login_required
 def delete_business(request, id):
     user = request.user
-    business = get_object_or_404(id=id, created_by=user)
+    business = get_object_or_404(Business, id=id, created_by=user)
     business.delete()
-    return redirect("show_businesses")
+    businesses = Business.objects.filter(created_by=user)
+    form = BusinessForm()
+
+    context = {"businesses": businesses, "form": form}
+    return render(request, "core/businesses.html", context)
 
 
 # ============================= Property ==============================
