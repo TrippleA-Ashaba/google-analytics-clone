@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.urls import reverse
 from .forms import BusinessForm, PropertyForm, StaffForm
 from .models import Business, Property, Staff
 
@@ -149,12 +149,12 @@ def edit_property(request, id):
         if form.is_valid():
             form.save()
             messages.success(
-                request, "Property edited successfully", extra_tags="bg-success"
+                request, f"{property} edited successfully", extra_tags="bg-success"
             )
-            return redirect("show_properties")
+            return redirect(f"/property/{property.id}/detail")
 
-    context = {"form": form}
-    return render(request, "core/property_edit.html", context)
+    context = {"form": form, "property": property}
+    return render(request, "partials/property_form.html", context)
 
 
 @login_required

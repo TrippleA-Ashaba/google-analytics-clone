@@ -67,8 +67,11 @@
 
 										<a
 											class="dropdown-item delete-business"
-											href="{% url 'delete_business' business.id %}"
-											hx-confirm="Are you sure you want to delete this business?">
+											hx-delete="{% url 'delete_business' business.id %}"
+											hx-target="#main"
+											hx-swap="innerHTML"
+											hx-confirm="Are you sure you want to delete {{business}}"
+											style="cursor: pointer">
 											<i class="bx bx-trash me-1"></i> Delete
 										</a>
 									</div>

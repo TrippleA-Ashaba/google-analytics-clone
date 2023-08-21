@@ -1,0 +1,8 @@
+{% load crispy_forms_tags %}
+
+<form action="{% url 'edit_property' property.id %}" method="post">
+	{% csrf_token %} {{form|crispy}}
+
+	<button type="reset" class="btn btn-sm btn-outline-secondary">Cancel</button>
+	<button class="btn btn-sm btn-primary">Save</button>
+</form>
