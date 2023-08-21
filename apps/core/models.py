@@ -33,6 +33,31 @@ class Property(models.Model):
         return self.name
 
 
+class Page(models.Model):
+    website = models.ForeignKey(Property, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField()
+    path = models.CharField(max_length=500)
+    referer = models.URLField(blank=True, null=True)
+    user_agent = models.CharField(max_length=500)
+    ip_address = models.GenericIPAddressField()
+
+    def __str__(self):
+        return f"{self.website} - {self.path} at {self.timestamp}"
+
+
+class Event(models.Model):
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField()
+    category = models.CharField(max_length=100)
+    action = models.CharField(max_length=100)
+    label = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return (
+            f"{self.page.website} - {self.category}/{self.action} at {self.timestamp}"
+        )
+
+
 class StaffRoles(models.TextChoices):
     VIEWER = "viewer", "Viewer"
     EDITOR = "editor", "Editor"
