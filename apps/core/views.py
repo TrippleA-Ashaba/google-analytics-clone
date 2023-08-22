@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import BusinessForm, PropertyForm, StaffForm
-from .models import Business, Property, Staff
+from .models import Business, Property, Staff, UserActivity, Page
+from django.db.models import Count
 
 # Create your views here.
 
@@ -16,10 +17,25 @@ def landing_page(request):
 
 @login_required
 def home(request):
-    businesses = Business.objects.filter(created_by=request.user).exists()
+    user = request.user
+    businesses = Business.objects.filter(created_by=user).exists()
     if not businesses:
         return redirect("business_register")
-    return render(request, "core/index.html")
+
+    active_website = Property.objects.get(business__created_by=user, is_active=True)
+
+    site_users = (
+        UserActivity.objects.filter(website=active_website)
+        .values("ip_address")
+        .annotate(ip_count=Count("ip_address"))
+        .count()
+    )
+
+    context = {
+        "site_users": site_users,
+    }
+
+    return render(request, "core/index.html", context)
 
 
 # ==================== Business ================================
