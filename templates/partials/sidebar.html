@@ -1,10 +1,12 @@
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+<aside
+	id="layout-menu"
+	class="layout-menu menu-vertical menu ui-bg-overlay bg-dark opacity-75 rounded-end-bottom">
 	<div class="app-brand demo">
-		<a href="{% url 'home' %}" class="app-brand-link">
+		<a class="app-brand-link" href="{% url 'home' %}">
 			<span class="app-brand-logo demo">
-				<i class="bx bx-globe fs-1"></i>
+				<i class="bx bx-globe text-white fs-1"></i>
 			</span>
-			<span class="app-brand-text demo menu-text fw-bolder ms-2">NUGsoft</span>
+			<span class="app-brand-text demo text-white fw-bolder ms-2">NUGsoft</span>
 		</a>
 
 		<a
@@ -18,8 +20,8 @@
 
 	<ul class="menu-inner py-1">
 		<!-- Dashboard -->
-		<li class="menu-item active">
-			<a href="{% url 'home' %}" class="menu-link">
+		<li class="menu-item text-white active">
+			<a href="{% url 'home' %}" class="menu-link text-white">
 				<i class="menu-icon tf-icons bx bx-home-circle"></i>
 				<div data-i18n="Analytics">Dashboard</div>
 			</a>
@@ -27,19 +29,19 @@
 
 		<!-- Layouts -->
 		<li class="menu-item">
-			<a href="javascript:void(0);" class="menu-link menu-toggle">
+			<a href="javascript:void(0);" class="menu-link text-white menu-toggle">
 				<i class="menu-icon tf-icons bx bx-layout"></i>
 				<div data-i18n="Layouts">Business</div>
 			</a>
 
 			<ul class="menu-sub">
 				<li class="menu-item">
-					<a href="{% url 'show_businesses' %}" class="menu-link">
+					<a href="{% url 'show_businesses' %}" class="menu-link text-white">
 						<div data-i18n="Without menu">Businesses</div>
 					</a>
 				</li>
 				<li class="menu-item">
-					<a href="{% url 'business_register' %}" class="menu-link">
+					<a href="{% url 'business_register' %}" class="menu-link text-white">
 						<div data-i18n="Without navbar">Add Business</div>
 					</a>
 				</li>
@@ -58,23 +60,23 @@
 		</li>
 
 		<li class="menu-item">
-			<a href="javascript:void(0);" class="menu-link menu-toggle">
+			<a href="javascript:void(0);" class="menu-link text-white menu-toggle">
 				<i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
 				<div data-i18n="Authentications">Property</div>
 			</a>
 			<ul class="menu-sub">
 				<li class="menu-item">
-					<a href="{% url 'show_properties' %}" class="menu-link">
+					<a href="{% url 'show_properties' %}" class="menu-link text-white">
 						<div data-i18n="Basic">Properties</div>
 					</a>
 				</li>
 				<li class="menu-item">
-					<a href="{% url 'property_register' %}" class="menu-link">
+					<a href="{% url 'property_register' %}" class="menu-link text-white">
 						<div data-i18n="Basic">Add Property</div>
 					</a>
 				</li>
 				<li class="menu-item">
-					<a href="{% url 'shared_properties' %}" class="menu-link">
+					<a href="{% url 'shared_properties' %}" class="menu-link text-white">
 						<div data-i18n="Basic">Shared Properties</div>
 					</a>
 				</li>
@@ -102,13 +104,13 @@
 			<span class="menu-header-text">Accounts</span>
 		</li>
 		<li class="menu-item">
-			<a href="javascript:void(0);" class="menu-link menu-toggle">
+			<a href="javascript:void(0);" class="menu-link text-white menu-toggle">
 				<i class="menu-icon tf-icons bx bx-user"></i>
 				<div data-i18n="Account Settings">Account Settings</div>
 			</a>
 			<ul class="menu-sub">
 				<li class="menu-item">
-					<a href="{% url 'staff_register' %}" class="menu-link">
+					<a href="{% url 'staff_register' %}" class="menu-link text-white">
 						<div data-i18n="Container">Add Staff</div>
 					</a>
 				</li>

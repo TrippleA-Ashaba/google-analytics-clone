@@ -64,12 +64,13 @@
 		<!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
 		<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 		<script src="{% static '/assets/js/config.js' %}"></script>
+		<script src="{% static '/assets/js/htmx.js' %}"></script>
 	</head>
 
 	<body>
 		<!--  -->
 		<!-- Layout wrapper -->
-		<div class="layout-wrapper layout-content-navbar">
+		<div class="layout-wrapper layout-content-navbar" id="main">
 			<div class="layout-container">
 				<!-- Menu -->
 
@@ -81,11 +82,15 @@
 					<!-- Navbar -->
 					{% include 'partials/navbar.html' %}
 					<!-- / Navbar -->
-
 					{% block content %} {% endblock %}
 				</div>
 			</div>
 		</div>
+		<script>
+			document.body.addEventListener("htmx:configRequest", function (evt) {
+				evt.detail.headers["X-CSRFToken"] = "{{ csrf_token }}"; // add a new parameter into the mix
+			});
+		</script>
 		<!--  -->
 		<!-- Core JS -->
 		<!-- build:js assets/vendor/js/core.js -->

@@ -42,7 +42,7 @@ def business_register(request):
                 extra_tags="bg-success",
             )
             return redirect("property_register")
-    return render(request, "core/business_register.html", {"form": form})
+    return render(request, "core/businesses.html", {"form": form})
 
 
 @login_required
@@ -60,23 +60,29 @@ def edit_business(request, id):
                 extra_tags="bg-success",
             )
             return redirect("show_businesses")
-    return render(request, "core/business_edit.html", {"form": form})
+    return render(request, "partials/form.html", {"form": form})
 
 
 @login_required
 def show_businesses(request):
     user = request.user
     businesses = Business.objects.filter(created_by=user)
-    context = {"businesses": businesses}
+    form = BusinessForm()
+
+    context = {"businesses": businesses, "form": form}
     return render(request, "core/businesses.html", context)
 
 
 @login_required
 def delete_business(request, id):
     user = request.user
-    business = get_object_or_404(id=id, created_by=user)
+    business = get_object_or_404(Business, id=id, created_by=user)
     business.delete()
-    return redirect("show_businesses")
+    businesses = Business.objects.filter(created_by=user)
+    form = BusinessForm()
+
+    context = {"businesses": businesses, "form": form}
+    return render(request, "core/businesses.html", context)
 
 
 # ============================= Property ==============================
@@ -143,12 +149,12 @@ def edit_property(request, id):
         if form.is_valid():
             form.save()
             messages.success(
-                request, "Property edited successfully", extra_tags="bg-success"
+                request, f"{property} edited successfully", extra_tags="bg-success"
             )
-            return redirect("show_properties")
+            return redirect(f"/property/{property.id}/detail")
 
-    context = {"form": form}
-    return render(request, "core/property_edit.html", context)
+    context = {"form": form, "property": property}
+    return render(request, "partials/property_form.html", context)
 
 
 @login_required

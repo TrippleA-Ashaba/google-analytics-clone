@@ -17,7 +17,17 @@
 				</div>
 				<div class="card-body">
 					<div class="row">
-						<div class="col-lg-6 mb-4 mb-xl-0">
+						<div hx-target="this" hx-swap="outerHTML">
+							<div>{{ property.domain }}</div>
+							<div class="my-3">
+								<button
+									class="btn btn-sm btn-primary"
+									hx-put="{% url 'edit_property' property.id %}">
+									Edit
+								</button>
+							</div>
+						</div>
+						<div class="col-lg-6 mb-4 mb-xl-0 mt-5">
 							<small class="text-light fw-semibold">Staff</small>
 							<div class="demo-inline-spacing mt-3">
 								<ol class="list-group list-group-numbered">
