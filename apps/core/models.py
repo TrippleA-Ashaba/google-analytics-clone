@@ -15,6 +15,7 @@ class Business(models.Model):
         return self.name
 
 
+# ======================== Property =================
 class Property(models.Model):
     business = models.ForeignKey(
         Business,
@@ -35,7 +36,7 @@ class Property(models.Model):
 
 class Page(models.Model):
     website = models.ForeignKey(Property, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now=True)
     path = models.CharField(max_length=500)
     referer = models.URLField(blank=True, null=True)
     user_agent = models.CharField(max_length=500)
@@ -58,6 +59,17 @@ class Event(models.Model):
         )
 
 
+class UserActivity(models.Model):
+    website = models.ForeignKey(Property, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=100)
+    session_id = models.CharField(max_length=50)  # For anonymous user session
+
+    def __str__(self):
+        return f"{self.website} - {self.action} at {self.timestamp}"
+
+
+# ========================== Staff =============================
 class StaffRoles(models.TextChoices):
     VIEWER = "viewer", "Viewer"
     EDITOR = "editor", "Editor"
