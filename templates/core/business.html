@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+<!--  -->
+{% block content %}
+<!--  -->
+<div class="card">
+	<div class="card-header text-center">Registered Businesses</div>
+	<div class="card-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Name</th>
+					<th scope="col">Sector</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for business in businesses %}
+				<tr>
+					<th scope="row">{{ forloop.counter }}</th>
+					<td>{{ business }}</td>
+					<td>{{ business.business_sector }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<!--  -->
+{% endblock %}

@@ -5,37 +5,50 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import BusinessForm, PropertyForm, StaffForm
 from .models import Business, Property, Staff, UserActivity, Page
 from django.db.models import Count
+import time
 
 # Create your views here.
 
 
+def vanilla(request):
+    return render(request, "vanilla.html")
+
+
 def landing_page(request):
     if request.user.is_authenticated:
-        return redirect("home")
+        return redirect("dashboard")
     return render(request, "landing_page.html")
 
 
 @login_required
-def home(request):
+def dashboard(request):
     user = request.user
     businesses = Business.objects.filter(created_by=user).exists()
+    site_users = 0
+
     if not businesses:
         return redirect("business_register")
 
-    active_website = Property.objects.get(business__created_by=user, is_active=True)
+    try:
+        active_website = (
+            Property.objects.get(business__created_by=user, is_active=True) or None
+        )
+    except Property.DoesNotExist:
+        active_website = None
 
-    site_users = (
-        UserActivity.objects.filter(website=active_website)
-        .values("ip_address")
-        .annotate(ip_count=Count("ip_address"))
-        .count()
-    )
+    if active_website:
+        site_users = (
+            UserActivity.objects.filter(website=active_website)
+            .values("ip_address")
+            .annotate(ip_count=Count("ip_address"))
+            .count()
+        )
 
     context = {
         "site_users": site_users,
     }
 
-    return render(request, "core/index.html", context)
+    return render(request, "core/dashboard.html", context)
 
 
 # ==================== Business ================================
@@ -57,7 +70,6 @@ def business_register(request):
                 f"{business} edited successfully",
                 extra_tags="bg-success",
             )
-            return redirect("property_register")
     return render(request, "core/businesses.html", {"form": form})
 
 
@@ -80,13 +92,13 @@ def edit_business(request, id):
 
 
 @login_required
-def show_businesses(request):
+def show_business(request):
     user = request.user
     businesses = Business.objects.filter(created_by=user)
     form = BusinessForm()
 
     context = {"businesses": businesses, "form": form}
-    return render(request, "core/businesses.html", context)
+    return render(request, "core/business.html", context)
 
 
 @login_required
