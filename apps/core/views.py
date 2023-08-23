@@ -57,8 +57,6 @@ def dashboard(request):
 @login_required
 def business_register(request):
     user = request.user
-    form = BusinessForm()
-
     if request.method == "POST":
         form = BusinessForm(request.POST)
         if form.is_valid():
@@ -70,7 +68,13 @@ def business_register(request):
                 f"{business} edited successfully",
                 extra_tags="bg-success",
             )
-    return render(request, "core/businesses.html", {"form": form})
+    return redirect("show_business")
+
+
+def business_detail(request, id):
+    business = get_object_or_404(Business, id=id)
+    context = {"business": business}
+    return render(request, "core/business_detail.html", context)
 
 
 @login_required
@@ -78,6 +82,7 @@ def edit_business(request, id):
     user = request.user
     business = get_object_or_404(Business, id=id, created_by=user)
     form = BusinessForm(instance=business)
+
     if request.method == "POST":
         form = BusinessForm(request.POST, instance=business)
         if form.is_valid():
@@ -87,8 +92,10 @@ def edit_business(request, id):
                 f"{business} edited successfully",
                 extra_tags="bg-success",
             )
-            return redirect("show_businesses")
-    return render(request, "partials/form.html", {"form": form})
+            return redirect("business_detail", id=business)
+
+    context = {"business": business, "form": form}
+    return render(request, "partials/form.html", context)
 
 
 @login_required

@@ -17,6 +17,7 @@ from .views import (
     show_properties,
     staff_register,
     vanilla,
+    business_detail,
 )
 
 urlpatterns = [
@@ -26,8 +27,9 @@ urlpatterns = [
     # ========== business =============
     path("business_register/", business_register, name="business_register"),
     path("businesses/", show_business, name="show_business"),
+    path("business/<int:id>/detail", business_detail, name="business_detail"),
     # path("business/<int:id>/delete/", delete_business, name="delete_business"),
-    # path("business/<int:id>/edit/", edit_business, name="edit_business"),
+    path("business/<int:id>/edit/", edit_business, name="edit_business"),
     # ========== staff =========
     # path("staff_register/", staff_register, name="staff_register"),
     # path("staff/<int:id>/remove", remove_staff, name="remove_staff"),

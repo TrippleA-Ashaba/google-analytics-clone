@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+<!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
+{% block content %}
+<!--  -->
+
+<h5>{{ business }}</h5>
+<p>{{ business.business_sector }}</p>
+
+<button
+	hx-target="this"
+	class="btn btn-sm btn-dark"
+	hx-get="{% url 'edit_business' business.id %}"
+	hx-swap="outerHTML">
+	Edit
+</button>
+<div class="my-5">
+	<h6>Properties:</h6>
+</div>
+<!--  -->
+{% endblock %}

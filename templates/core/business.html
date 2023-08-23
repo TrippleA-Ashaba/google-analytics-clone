@@ -1,11 +1,23 @@
 {% extends 'base.html' %}
 <!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
 {% block content %}
 <!--  -->
 <div class="card">
-	<div class="card-header text-center">Registered Businesses</div>
+	<div class="card-header d-flex justify-content-between">
+		<div>Registered Businesses</div>
+		<div>
+			<button
+				class="btn btn-sm btn-outline-dark"
+				data-bs-toggle="modal"
+				data-bs-target="#business_register_modal">
+				Add a Business
+			</button>
+		</div>
+	</div>
 	<div class="card-body">
-		<table class="table">
+		<table class="table table-hover">
 			<thead>
 				<tr>
 					<th scope="col">#</th>
@@ -15,14 +27,63 @@
 			</thead>
 			<tbody>
 				{% for business in businesses %}
-				<tr>
+				<tr style="transform: rotate(0)">
 					<th scope="row">{{ forloop.counter }}</th>
-					<td>{{ business }}</td>
+					<td>
+						<a
+							class="stretched-link"
+							hx-get="{% url 'business_detail' business.id %}"
+							hx-target="#main"
+							hx-swap="innerHTML"
+							hx-push-url="true"
+							style="cursor: pointer">
+							{{ business }}
+						</a>
+					</td>
 					<td>{{ business.business_sector }}</td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table>
+	</div>
+</div>
+<!--  -->
+
+<!-- Business Register Modal -->
+<div
+	class="modal fade"
+	id="business_register_modal"
+	tabindex="-1"
+	aria-labelledby="business_register_modal"
+	aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Add a Business</h1>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<form action="{% url 'business_register' %}" method="post">
+				<div class="modal-body">
+					{% csrf_token %}
+					<!--  -->
+					{{form |crispy}}
+					<!--  -->
+				</div>
+				<div class="modal-footer border-0">
+					<button
+						type="button"
+						class="btn btn-sm btn-outline-secondary"
+						data-bs-dismiss="modal">
+						Close
+					</button>
+					<button type="submit" class="btn btn-sm btn-dark">Save changes</button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
 <!--  -->
