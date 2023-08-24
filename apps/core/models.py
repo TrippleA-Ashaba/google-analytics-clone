@@ -20,6 +20,7 @@ class Property(models.Model):
     business = models.ForeignKey(
         Business,
         on_delete=models.CASCADE,
+        related_name="property",
         help_text="Add a business first in None is registered",
     )
     name = models.CharField("Property Name", max_length=100, blank=False, null=False)

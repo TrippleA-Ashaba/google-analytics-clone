@@ -4,19 +4,424 @@
 <!--  -->
 {% block content %}
 <!--  -->
-
-<h5>{{ business }}</h5>
-<p>{{ business.business_sector }}</p>
-
-<button
-	hx-target="this"
-	class="btn btn-sm btn-dark"
-	hx-get="{% url 'edit_business' business.id %}"
-	hx-swap="outerHTML">
-	Edit
-</button>
+<div>
+	<h5>{{ business }}</h5>
+	<p>{{ business.business_sector }}</p>
+</div>
+<div id="edit" class="d-flex gap-2">
+	<button
+		hx-target="#edit"
+		class="btn btn-sm btn-dark"
+		hx-get="{% url 'edit_business' business.id %}"
+		hx-swap="outerHTML">
+		Edit Business
+	</button>
+	<button
+		type="submit"
+		class="btn btn-sm btn-outline-danger"
+		hx-delete="{% url 'delete_business' business.id %}"
+		hx-swap="outerHTML"
+		hx-target="#main"
+		hx-push-url="true"
+		hx-confirm="Deleting {{business}} will lead to deletion of all related data. Are you sure you want to continue?">
+		Delete
+	</button>
+</div>
 <div class="my-5">
-	<h6>Properties:</h6>
+	<div class="card border-0">
+		<div class="card-header d-flex justify-content-between">
+			<div>{{ business }} Properties</div>
+			<div>
+				<button
+					class="btn btn-sm btn-outline-dark"
+					data-bs-toggle="modal"
+					data-bs-target="#property_register_modal">
+					Add a Property
+				</button>
+			</div>
+		</div>
+		<div class="card-body">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Domain</th>
+						<th scope="col">Staff</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
+					{% for property in properties %}
+					<tr>
+						<td>{{ property }}</td>
+						<td>{{ property.domain }}</td>
+						{% if property.staff.all %}
+						<!--  -->
+						<td style="position: relative">
+							{% for staff in property.staff.all %}
+							<img
+								src="https://github.com/mdo.png"
+								alt=""
+								width="20"
+								height="20"
+								class="rounded-circle me-2"
+								style="position: absolute; left: 0%" />
+							{% endfor %}
+						</td>
+						<!--  -->
+						{% else %}
+						<td>None</td>
+						{% endif %}
+
+						<td>
+							<button
+								class="btn btn-sm btn-outline-dark"
+								hx-get="{% url 'edit_property' property.id %}"
+								hx-trigger="edit"
+								_="on click
+									if .editing is not empty
+										Swal.fire({title: 'Already Editing',
+											showCancelButton: true,
+											showConfirmButton:false,
+											text:'Hey!  You are already editing a row!'})
+										if the result's isConfirmed is false
+											halt
+										end
+										send cancel to .editing
+									end
+									trigger edit">
+								<i class="bi bi-pencil-square"></i>
+							</button>
+							<button
+								class="btn btn-sm btn-outline-danger"
+								_="on htmx:confirm(issueRequest)
+									halt the event
+									call Swal.fire({title: 'Delete {{property}}', text:'Do you want to continue?',confirmButtonColor: '#dc3545'})
+									if result.isConfirmed issueRequest()"
+								hx-delete="{% url 'delete_property' property.id %}">
+								<i class="bi bi-trash"></i>
+							</button>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="card">
+	<h5 class="card-header">Table Basic</h5>
+	<div class="table-responsive text-nowrap">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Project</th>
+					<th>Client</th>
+					<th>Users</th>
+					<th>Status</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody class="table-border-bottom-0">
+				<tr>
+					<td>
+						<i class="fab fa-angular fa-lg text-danger me-3"></i>
+						<strong>Angular Project</strong>
+					</td>
+					<td>Albert Cook</td>
+					<td>
+						<ul
+							class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Lilian Fuller">
+								<img
+									src="../assets/img/avatars/5.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Sophia Wilkerson">
+								<img
+									src="../assets/img/avatars/6.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Christina Parker">
+								<img
+									src="../assets/img/avatars/7.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+						</ul>
+					</td>
+					<td><span class="badge bg-label-primary me-1">Active</span></td>
+					<td>
+						<div class="dropdown">
+							<button
+								type="button"
+								class="btn p-0 dropdown-toggle hide-arrow"
+								data-bs-toggle="dropdown">
+								<i class="bx bx-dots-vertical-rounded"></i>
+							</button>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-edit-alt me-1"></i> Edit</a
+								>
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-trash me-1"></i> Delete</a
+								>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<i class="fab fa-react fa-lg text-info me-3"></i>
+						<strong>React Project</strong>
+					</td>
+					<td>Barry Hunter</td>
+					<td>
+						<ul
+							class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Lilian Fuller">
+								<img
+									src="../assets/img/avatars/5.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Sophia Wilkerson">
+								<img
+									src="../assets/img/avatars/6.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Christina Parker">
+								<img
+									src="../assets/img/avatars/7.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+						</ul>
+					</td>
+					<td><span class="badge bg-label-success me-1">Completed</span></td>
+					<td>
+						<div class="dropdown">
+							<button
+								type="button"
+								class="btn p-0 dropdown-toggle hide-arrow"
+								data-bs-toggle="dropdown">
+								<i class="bx bx-dots-vertical-rounded"></i>
+							</button>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-edit-alt me-2"></i> Edit</a
+								>
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-trash me-2"></i> Delete</a
+								>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<i class="fab fa-vuejs fa-lg text-success me-3"></i>
+						<strong>VueJs Project</strong>
+					</td>
+					<td>Trevor Baker</td>
+					<td>
+						<ul
+							class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Lilian Fuller">
+								<img
+									src="../assets/img/avatars/5.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Sophia Wilkerson">
+								<img
+									src="../assets/img/avatars/6.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Christina Parker">
+								<img
+									src="../assets/img/avatars/7.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+						</ul>
+					</td>
+					<td><span class="badge bg-label-info me-1">Scheduled</span></td>
+					<td>
+						<div class="dropdown">
+							<button
+								type="button"
+								class="btn p-0 dropdown-toggle hide-arrow"
+								data-bs-toggle="dropdown">
+								<i class="bx bx-dots-vertical-rounded"></i>
+							</button>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-edit-alt me-2"></i> Edit</a
+								>
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-trash me-2"></i> Delete</a
+								>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+						<strong>Bootstrap Project</strong>
+					</td>
+					<td>Jerry Milton</td>
+					<td>
+						<ul
+							class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Lilian Fuller">
+								<img
+									src="../assets/img/avatars/5.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Sophia Wilkerson">
+								<img
+									src="../assets/img/avatars/6.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+							<li
+								data-bs-toggle="tooltip"
+								data-popup="tooltip-custom"
+								data-bs-placement="top"
+								class="avatar avatar-xs pull-up"
+								title="Christina Parker">
+								<img
+									src="../assets/img/avatars/7.png"
+									alt="Avatar"
+									class="rounded-circle" />
+							</li>
+						</ul>
+					</td>
+					<td><span class="badge bg-label-warning me-1">Pending</span></td>
+					<td>
+						<div class="dropdown">
+							<button
+								type="button"
+								class="btn p-0 dropdown-toggle hide-arrow"
+								data-bs-toggle="dropdown">
+								<i class="bx bx-dots-vertical-rounded"></i>
+							</button>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-edit-alt me-2"></i> Edit</a
+								>
+								<a class="dropdown-item" href="javascript:void(0);"
+									><i class="bx bx-trash me-2"></i> Delete</a
+								>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- Property Register Modal -->
+<div
+	class="modal fade"
+	id="property_register_modal"
+	tabindex="-1"
+	aria-labelledby="business_register_modal"
+	aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">
+					Add a Property to {{ business }}
+				</h1>
+				<button
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<form action="{% url 'property_register' business.id %}" method="post">
+				<div class="modal-body">
+					{% csrf_token %}
+					<!--  -->
+					{{form |crispy}}
+					<!--  -->
+				</div>
+				<div class="modal-footer border-0">
+					<button
+						type="button"
+						class="btn btn-sm btn-outline-secondary"
+						data-bs-dismiss="modal">
+						Close
+					</button>
+					<button type="submit" class="btn btn-sm btn-dark">Save changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 <!--  -->
 {% endblock %}

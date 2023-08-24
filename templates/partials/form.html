@@ -1,20 +1,17 @@
 {% load crispy_forms_tags %}
 <div class="row">
 	<div class="col-6 my-4">
-		<form>
+		<form hx-post="{% url 'edit_business' business.id %}" hx-target="#main" hx-swap="innerHTML">
 			{% csrf_token %}
 			<!--  -->
 			{{form|crispy}}
-
-			<button type="reset" class="btn btn-sm btn-outline-danger">Reset</button>
 			<button
-				type="submit"
-				class="btn btn-sm btn-dark"
-				hx-post="{% url 'edit_business' business.id %}"
-				hx-target="#main"
-				hx-swap="innerHTML">
-				Save
+				class="btn btn-sm btn-outline-secondary"
+				hx-get="{% url 'business_detail' business.id %}">
+				Cancel
 			</button>
+			<button type="reset" class="btn btn-sm btn-outline-danger">Reset</button>
+			<button type="submit" class="btn btn-sm btn-dark">Save</button>
 		</form>
 	</div>
 </div>

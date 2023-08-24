@@ -15,11 +15,7 @@ class BusinessForm(forms.ModelForm):
 class PropertyForm(forms.ModelForm):
     class Meta:
         model = Property
-        exclude = ("is_active",)
-
-    def __init__(self, user, *args, **kwargs):
-        super(PropertyForm, self).__init__(*args, **kwargs)
-        self.fields["business"].queryset = Business.objects.filter(created_by=user)
+        exclude = ("is_active", "business")
 
 
 class StaffForm(forms.ModelForm):

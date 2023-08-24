@@ -6,6 +6,7 @@ from .forms import BusinessForm, PropertyForm, StaffForm
 from .models import Business, Property, Staff, UserActivity, Page
 from django.db.models import Count
 import time
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -71,9 +72,13 @@ def business_register(request):
     return redirect("show_business")
 
 
+@login_required
 def business_detail(request, id):
-    business = get_object_or_404(Business, id=id)
-    context = {"business": business}
+    user = request.user
+    business = get_object_or_404(Business, id=id, created_by=user)
+    properties = business.property.all().order_by("created_at")
+    form = PropertyForm()
+    context = {"business": business, "form": form, "properties": properties}
     return render(request, "core/business_detail.html", context)
 
 
@@ -92,7 +97,7 @@ def edit_business(request, id):
                 f"{business} edited successfully",
                 extra_tags="bg-success",
             )
-            return redirect("business_detail", id=business)
+        return redirect("business_detail", id=business.id)
 
     context = {"business": business, "form": form}
     return render(request, "partials/form.html", context)
@@ -112,33 +117,32 @@ def show_business(request):
 def delete_business(request, id):
     user = request.user
     business = get_object_or_404(Business, id=id, created_by=user)
-    business.delete()
-    businesses = Business.objects.filter(created_by=user)
-    form = BusinessForm()
 
-    context = {"businesses": businesses, "form": form}
-    return render(request, "core/businesses.html", context)
+    if request.method == "DELETE":
+        business.delete()
+
+    return redirect("show_business")
 
 
 # ============================= Property ==============================
 
 
 @login_required
-def property_register(request):
+def property_register(request, business_id=id):
     user = request.user
-    form = PropertyForm(user)
+    business = get_object_or_404(Business, id=business_id, created_by=user)
     if request.method == "POST":
-        form = PropertyForm(user, request.POST)
+        form = PropertyForm(request.POST)
         if form.is_valid():
-            property = form.cleaned_data["name"]
-            form.save()
+            property = form.save(commit=False)
+            property.business = business
+            property.save()
             messages.success(
                 request,
                 f"{property} added successfully",
                 extra_tags="bg-success",
             )
-        return redirect("show_properties")
-    return render(request, "core/property_register.html", {"form": form})
+        return redirect("business_detail", id=business_id)
 
 
 @login_required
@@ -175,30 +179,33 @@ def property_detail(request, id):
 
 @login_required
 def edit_property(request, id):
-    user = request.user
-    property = get_object_or_404(Property, id=id, business__created_by=user)
-    form = PropertyForm(user=user, instance=property)
-
+    property = get_object_or_404(Property, id=id)
     if request.method == "POST":
-        form = PropertyForm(user, request.POST, instance=property)
+        form = PropertyForm(request.POST, instance=property)
+        print(form.data)
         if form.is_valid():
             form.save()
+            print(form.cleaned_data)
             messages.success(
                 request, f"{property} edited successfully", extra_tags="bg-success"
             )
-            return redirect(f"/property/{property.id}/detail")
+        return redirect("business_detail", id=property.business.id)
 
-    context = {"form": form, "property": property}
-    return render(request, "partials/property_form.html", context)
+    context = {"property": property}
+    return render(request, "partials/property_edit.html", context)
 
 
 @login_required
 def delete_property(request, id):
     user = request.user
     property = get_object_or_404(Property, id=id, business__created_by=user)
-    property.delete()
-    messages.success(request, "Property deleted successfully", extra_tags="bg-success")
-    return redirect("show_properties")
+    if request.method == "DELETE":
+        property.delete()
+        messages.success(
+            request, "Property deleted successfully", extra_tags="bg-success"
+        )
+
+        return HttpResponse(status=200)
 
 
 @login_required
