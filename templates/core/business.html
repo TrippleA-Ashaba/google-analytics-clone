@@ -4,47 +4,52 @@
 <!--  -->
 {% block content %}
 <!--  -->
-<div class="card">
-	<div class="card-header d-flex justify-content-between">
-		<div>Registered Businesses</div>
-		<div>
-			<button
-				class="btn btn-sm btn-outline-dark"
-				data-bs-toggle="modal"
-				data-bs-target="#business_register_modal">
-				Add a Business
-			</button>
+<div class="col">{% include 'partials/sidebar.html' %}</div>
+
+<!--  -->
+<div class="col-9">
+	<div class="card">
+		<div class="card-header d-flex justify-content-between">
+			<div>Registered Businesses</div>
+			<div>
+				<button
+					class="btn btn-sm btn-outline-dark"
+					data-bs-toggle="modal"
+					data-bs-target="#business_register_modal">
+					Add a Business
+				</button>
+			</div>
 		</div>
-	</div>
-	<div class="card-body">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">Name</th>
-					<th scope="col">Sector</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for business in businesses %}
-				<tr style="transform: rotate(0)">
-					<th scope="row">{{ forloop.counter }}</th>
-					<td>
-						<a
-							class="stretched-link"
-							hx-get="{% url 'business_detail' business.id %}"
-							hx-target="#main"
-							hx-swap="innerHTML"
-							hx-push-url="true"
-							style="cursor: pointer">
-							{{ business }}
-						</a>
-					</td>
-					<td>{{ business.business_sector }}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+		<div class="card-body">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Sector</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for business in businesses %}
+					<tr style="transform: rotate(0)">
+						<th scope="row">{{ forloop.counter }}</th>
+						<td>
+							<a
+								class="stretched-link"
+								hx-get="{% url 'business_detail' business.id %}"
+								hx-target="#main"
+								hx-swap="outerHTML"
+								hx-push-url="true"
+								style="cursor: pointer">
+								{{ business }}
+							</a>
+						</td>
+						<td>{{ business.business_sector }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 <!--  -->

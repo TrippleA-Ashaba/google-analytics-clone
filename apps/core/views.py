@@ -142,7 +142,7 @@ def property_register(request, business_id=id):
                 f"{property} added successfully",
                 extra_tags="bg-success",
             )
-        return redirect("business_detail", id=business_id)
+    return redirect("business_detail", id=business_id)
 
 
 @login_required
