@@ -66,9 +66,10 @@ def business_register(request):
             business.save()
             messages.success(
                 request,
-                f"{business} edited successfully",
+                f"{business} added successfully",
                 extra_tags="bg-success",
             )
+
     return redirect("show_business")
 
 
@@ -76,7 +77,7 @@ def business_register(request):
 def business_detail(request, id):
     user = request.user
     business = get_object_or_404(Business, id=id, created_by=user)
-    properties = business.property.all().order_by("created_at")
+    properties = business.property.all().order_by("-created_at")
     form = PropertyForm()
     context = {"business": business, "form": form, "properties": properties}
     return render(request, "core/business_detail.html", context)
@@ -106,7 +107,7 @@ def edit_business(request, id):
 @login_required
 def show_business(request):
     user = request.user
-    businesses = Business.objects.filter(created_by=user)
+    businesses = Business.objects.filter(created_by=user).order_by("-created_at")
     form = BusinessForm()
 
     context = {"businesses": businesses, "form": form}
@@ -120,6 +121,11 @@ def delete_business(request, id):
 
     if request.method == "DELETE":
         business.delete()
+        messages.success(
+            request,
+            f"{business} deleted successfully",
+            extra_tags="bg-success",
+        )
 
     return redirect("show_business")
 

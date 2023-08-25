@@ -35,6 +35,12 @@
 				overflow-y: auto;
 				height: calc(100vh - 60px);
 			}
+			.messages {
+				position: fixed;
+				right: 0;
+				top: 0;
+				z-index: 1000;
+			}
 
 			tr.htmx-swapping td {
 				opacity: 0;
@@ -54,6 +60,7 @@
 				src="{% static 'assets/img/loader.svg' %}"
 				alt="" />
 		</div>
+		<div class="messages">{% include 'partials/messages.html' %}</div>
 		<main id="main" class="main-content row">
 			{% block content %}
 
