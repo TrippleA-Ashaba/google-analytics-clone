@@ -188,12 +188,16 @@ def edit_property(request, id):
     property = get_object_or_404(Property, id=id)
     if request.method == "POST":
         form = PropertyForm(request.POST, instance=property)
-        print(form.data)
         if form.is_valid():
             form.save()
-            print(form.cleaned_data)
             messages.success(
                 request, f"{property} edited successfully", extra_tags="bg-success"
+            )
+        else:
+            messages.error(
+                request,
+                f"{property} was not edited, check your values. ",
+                extra_tags="bg-danger",
             )
         return redirect("business_detail", id=property.business.id)
 

@@ -20,7 +20,8 @@
 			hx-target="#edit"
 			class="btn btn-sm btn-dark"
 			hx-get="{% url 'edit_business' business.id %}"
-			hx-swap="outerHTML">
+			hx-swap="outerHTML"
+			hx-indicator="#indicator">
 			Edit Business
 		</button>
 		<button
@@ -30,6 +31,7 @@
 			hx-swap="outerHTML"
 			hx-target="#main"
 			hx-push-url="true"
+			hx-indicator="#indicator"
 			_="on htmx:confirm(issueRequest)
 				halt the event
 				call Swal.fire({
