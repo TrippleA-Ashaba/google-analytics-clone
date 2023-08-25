@@ -1,0 +1,20 @@
+<tr class="editing" hx-trigger="cancel" hx-get="{% url 'business_detail' property.business.id %}">
+	<td><input type="text" name="name" value="{{ property.name }}" /></td>
+	<td><input type="url" name="domain" value="{{ property.domain }}" /></td>
+	<td>
+		<button
+			class="btn btn-sm btn-outline-secondary"
+			hx-get="{% url 'business_detail' property.business.id %}"
+			hx-target="#main">
+			Cancel
+		</button>
+		<button
+			class="btn btn-danger"
+			hx-post="{% url 'edit_property' property.id %}"
+			hx-target="#main"
+			hx-include="closest tr"
+			hx-swap="outerHTML">
+			Save
+		</button>
+	</td>
+</tr>

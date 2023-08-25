@@ -36,7 +36,7 @@ from .forms import LoginForm, SignUpForm
 class SignUpView(CreateView):
     template_name = "accounts/signup.html"
     form_class = SignUpForm
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("dashboard")
 
     def form_valid(self, form):
         # Call the parent class's form_valid method to save the user
@@ -59,7 +59,7 @@ def user_login(request):
             user = form.get_user()
             login(request, user)
             return redirect(
-                "home"
+                "dashboard"
             )  # Replace 'home' with the URL name of your home page
     else:
         form = LoginForm()

@@ -2,22 +2,17 @@
 
 <!--  -->
 {% block content %}
-<div class="container-xxl">
-	<div class="authentication-wrapper authentication-basic container-p-y">
-		<div class="">
-			<div class="card">
-				<div class="card-body">
-					<h1 class="mb-4 text-center">Welcome to NugSoft Analytics</h1>
-					<p class="mb-2 text-center">
-						Nugsoft Analytics gives you the free tools you need to analyze data for your
-						business in one place, so you can make smarter decisions.
-					</p>
-					<div class="d-flex justify-content-center my-3">
-						<a href="{% url 'home' %}" class="btn btn-sm btn-primary"
-							>Start Measuring</a
-						>
-					</div>
-				</div>
+
+<div class="d-flex align-items-center justify-content-center" style="height: 100vh">
+	<div class="card">
+		<div class="card-body">
+			<h1 class="mb-4 text-center">Welcome to NugSoft Analytics</h1>
+			<p class="mb-2 text-center">
+				Nugsoft Analytics gives you the free tools you need to analyze data for your
+				business in one place, so you can make smarter decisions.
+			</p>
+			<div class="d-flex justify-content-center my-3">
+				<a href="{% url 'dashboard' %}" class="btn btn-sm btn-primary">Start Measuring</a>
 			</div>
 		</div>
 	</div>

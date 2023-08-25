@@ -61,7 +61,6 @@ class Command(BaseCommand):
                     path=path,
                     referer=fake.uri(),
                     user_agent=fake.user_agent(),
-                    ip_address=fake.ipv4(),
                 )
 
                 for _ in range(events_per_page):
@@ -80,6 +79,7 @@ class Command(BaseCommand):
                         website=property,
                         action=action,
                         session_id=session_id,
+                        ip_address=fake.ipv4(),
                     )
 
         self.stdout.write(

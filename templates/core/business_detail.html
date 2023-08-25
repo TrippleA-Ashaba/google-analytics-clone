@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+<!--  -->
+{% load static %}
+<!--  -->
+{% load crispy_forms_tags %}
+<!--  -->
+{% block content %}
+<!--  -->
+<!--  -->
+<div class="col">{% include 'partials/sidebar.html' %}</div>
+
+<!--  -->
+<div class="col-9">
+	<div class="w-100">
+		<h5>{{ business }}</h5>
+		<p>{{ business.business_sector }}</p>
+	</div>
+	<div id="edit" class="d-flex gap-2">
+		<button
+			hx-target="#edit"
+			class="btn btn-sm btn-dark"
+			hx-get="{% url 'edit_business' business.id %}"
+			hx-swap="outerHTML"
+			hx-indicator="#indicator">
+			Edit Business
+		</button>
+		<button
+			type="submit"
+			class="btn btn-sm btn-outline-danger"
+			hx-delete="{% url 'delete_business' business.id %}"
+			hx-swap="outerHTML"
+			hx-target="#main"
+			hx-push-url="true"
+			hx-indicator="#indicator"
+			_="on htmx:confirm(issueRequest)
+				halt the event
+				call Swal.fire({
+					title: '{{business}}',
+					text:'Do you want to continue?',
+					confirmButtonText:'Delete',
+					confirmButtonColor:'#dc3545'
+				})
+				if result.isConfirmed issueRequest()">
+			Delete
+		</button>
+	</div>
+	<div class="my-5">
+		<div class="card border-0">
+			<div class="card-header d-flex justify-content-between">
+				<div>{{ business }} Properties</div>
+				<div>
+					<button
+						class="btn btn-sm btn-outline-dark"
+						data-bs-toggle="modal"
+						data-bs-target="#property_register_modal">
+						Add a Property
+					</button>
+				</div>
+			</div>
+			<div class="card-body">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Domain</th>
+							<th scope="col">Staff</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+					<tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
+						{% for property in properties %}
+						<tr>
+							<td>{{ property }}</td>
+							<td>{{ property.domain }}</td>
+							{% if property.staff.all %}
+							<!--  -->
+							<td>
+								<ul
+									class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+									<li
+										data-bs-toggle="tooltip"
+										data-popup="tooltip-custom"
+										data-bs-placement="top"
+										class="avatar avatar-xs pull-up"
+										title="Lilian Fuller">
+										<img
+											src="{% static '/assets/img/avatars/5.png' %}"
+											alt="Avatar"
+											class="rounded-circle" />
+									</li>
+									<li
+										data-bs-toggle="tooltip"
+										data-popup="tooltip-custom"
+										data-bs-placement="top"
+										class="avatar avatar-xs pull-up"
+										title="Sophia Wilkerson">
+										<img
+											src="{% static '/assets/img/avatars/6.png' %}"
+											alt="Avatar"
+											class="rounded-circle" />
+									</li>
+									<li
+										data-bs-toggle="tooltip"
+										data-popup="tooltip-custom"
+										data-bs-placement="top"
+										class="avatar avatar-xs pull-up"
+										title="Christina Parker">
+										<img
+											src="{% static '/assets/img/avatars/7.png' %}"
+											alt="Avatar"
+											class="rounded-circle" />
+									</li>
+								</ul>
+							</td>
+							<!--  -->
+							{% else %}
+							<td>None</td>
+							{% endif %}
+
+							<td>
+								<button
+									class="btn btn-sm btn-outline-dark"
+									hx-get="{% url 'edit_property' property.id %}"
+									hx-trigger="edit"
+									_="on click
+									if .editing is not empty
+										Swal.fire({title: 'Already Editing',
+											showCancelButton: true,
+											showConfirmButton:false,
+											text:'Hey!  You are already editing a row!'})
+										if the result's isConfirmed is false
+											halt
+										end
+										send cancel to .editing
+									end
+									trigger edit">
+									<i class="bi bi-pencil-square"></i>
+								</button>
+								<button
+									class="btn btn-sm btn-outline-danger"
+									_="on htmx:confirm(issueRequest)
+									halt the event
+									call Swal.fire({title: 'Delete {{property}}', text:'Do you want to continue?',confirmButtonColor: '#dc3545'})
+									if result.isConfirmed issueRequest()"
+									hx-delete="{% url 'delete_property' property.id %}">
+									<i class="bi bi-trash"></i>
+								</button>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!--  -->
+
+	<!--  -->
+	<!-- Property Register Modal -->
+	<div
+		class="modal fade"
+		id="property_register_modal"
+		tabindex="-1"
+		aria-labelledby="property_register_modal"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">
+						Add a Property to {{ business }}
+					</h1>
+					<button
+						type="button"
+						class="btn-close"
+						data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<form action="{% url 'property_register' business.id %}" method="post">
+					<div class="modal-body">
+						{% csrf_token %}
+						<!--  -->
+						{{form |crispy}}
+						<!--  -->
+					</div>
+					<div class="modal-footer border-0">
+						<button
+							type="button"
+							class="btn btn-sm btn-outline-secondary"
+							data-bs-dismiss="modal">
+							Close
+						</button>
+						<button class="btn btn-sm btn-dark">Save changes</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--  -->
+</div>
+{% endblock %}

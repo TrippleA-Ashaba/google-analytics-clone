@@ -1,0 +1,308 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Client Page</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+			crossorigin="anonymous" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+	</head>
+	<body>
+		<main class="d-flex flex-nowrap" style="height: 100vh">
+			<!-- SIDE BAR -->
+			<div class="d-flex flex-column flex-shrink-0 p-3 bg-dark" style="width: 280px">
+				<ul class="mb-auto text-light fw-medium navbar-nav px-3">
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							data-bs-toggle="collapse"
+							href="#dashboard"
+							role="button"
+							aria-expanded="false"
+							aria-controls="dashboard"
+							><i class="bi bi-speedometer2"></i>
+							Dashboard
+						</a>
+						<div class="collapse ps-4" id="dashboard">
+							<ul class="nav flex-column mb-auto nav-pills">
+								<li><a class="dropdown-item" href="#">Action</a></li>
+								<li><a class="dropdown-item" href="#">Another action</a></li>
+								<li>
+									<a class="dropdown-item" href="#">Something else here</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+					<!-- <li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							data-bs-toggle="collapse"
+							href="#notification"
+							role="button"
+							aria-expanded="false"
+							aria-controls="notification"
+							><i class="bi bi-bell"></i>
+							Notification
+						</a>
+						<div class="collapse ps-4" id="notification">
+							<ul class="nav flex-column mb-auto nav-pills">
+								<li><a class="dropdown-item" href="#">Action</a></li>
+								<li><a class="dropdown-item" href="#">Another action</a></li>
+								<li>
+									<a class="dropdown-item" href="#">Something else here</a>
+								</li>
+							</ul>
+						</div>
+					</li> -->
+					<!-- <li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							data-bs-toggle="collapse"
+							href="#loan-management"
+							role="button"
+							aria-expanded="false"
+							aria-controls="loan-management"
+							><i class="bi bi-journal-text"></i>
+							Loan Management
+						</a>
+						<div class="collapse ps-4" id="loan-management">
+							<ul class="nav flex-column mb-auto nav-pills">
+								<li><a class="dropdown-item" href="#">Action</a></li>
+								<li><a class="dropdown-item" href="#">Another action</a></li>
+								<li>
+									<a class="dropdown-item" href="#">Something else here</a>
+								</li>
+							</ul>
+						</div>
+					</li> -->
+					<!-- <li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							data-bs-toggle="collapse"
+							href="#customer"
+							role="button"
+							aria-expanded="false"
+							aria-controls="customer"
+							><i class="bi bi-people"></i>
+							Customers
+						</a>
+						<div class="collapse ps-4" id="customer">
+							<ul class="nav flex-column mb-auto nav-pills">
+								<li><a class="dropdown-item" href="#">Action</a></li>
+								<li><a class="dropdown-item" href="#">Another action</a></li>
+								<li>
+									<a class="dropdown-item" href="#">Something else here</a>
+								</li>
+							</ul>
+						</div>
+					</li> -->
+					<!-- <li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							data-bs-toggle="collapse"
+							href="#statement"
+							role="button"
+							aria-expanded="false"
+							aria-controls="statement"
+							><i class="bi bi-arrow-down-up"></i>
+							Statements
+						</a>
+						<div class="collapse ps-4" id="statement">
+							<ul class="nav flex-column mb-auto nav-pills">
+								<li><a class="dropdown-item" href="#">Action</a></li>
+								<li><a class="dropdown-item" href="#">Another action</a></li>
+								<li>
+									<a class="dropdown-item" href="#">Something else here</a>
+								</li>
+							</ul>
+						</div>
+					</li> -->
+					<!-- <li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							data-bs-toggle="collapse"
+							href="#settings"
+							role="button"
+							aria-expanded="false"
+							aria-controls="settings"
+							><i class="bi bi-gear"></i>
+							Settings
+						</a>
+						<div class="collapse ps-4" id="settings">
+							<ul class="nav flex-column mb-auto nav-pills">
+								<li><a class="dropdown-item" href="#">Action</a></li>
+								<li><a class="dropdown-item" href="#">Another action</a></li>
+								<li>
+									<a class="dropdown-item" href="#">Something else here</a>
+								</li>
+							</ul>
+						</div>
+					</li> -->
+					<!-- <li class="nav-item">
+						<a
+							class="nav-link"
+							aria-current="page"
+							data-bs-toggle="collapse"
+							href="#help"
+							role="button"
+							aria-expanded="false"
+							aria-controls="help"
+							><i class="bi bi-info-circle"></i>
+							Help & Support
+						</a>
+						<div class="collapse ps-4" id="help">
+							<ul class="nav flex-column mb-auto nav-pills">
+								<li><a class="dropdown-item" href="#">Action</a></li>
+								<li><a class="dropdown-item" href="#">Another action</a></li>
+								<li>
+									<a class="dropdown-item" href="#">Something else here</a>
+								</li>
+							</ul>
+						</div>
+					</li> -->
+				</ul>
+				<hr />
+				<div class="dropdown">
+					<a
+						href="#"
+						class="d-flex align-items-center link-dark text-light text-decoration-none dropdown-toggle"
+						id="dropdownUser2"
+						data-bs-toggle="dropdown"
+						aria-expanded="false">
+						<img
+							src="https://github.com/mdo.png"
+							alt=""
+							width="32"
+							height="32"
+							class="rounded-circle me-2" />
+						<strong class="text-light">mdo</strong>
+					</a>
+					<ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+						<li><a class="dropdown-item" href="#">New project...</a></li>
+						<li><a class="dropdown-item" href="#">Settings</a></li>
+						<li><a class="dropdown-item" href="#">Profile</a></li>
+						<li><hr class="dropdown-divider" /></li>
+						<li><a class="dropdown-item" href="#">Sign out</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- End sidebar -->
+
+			<!-- Main Content -->
+			<div class="m-4">
+				<div class="row gap-2">
+					<div class="col-3 border-start border-3 border-warning shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6"> Number of Customers </span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-warning p-3 rounded-circle">
+								<i class="bi bi-people text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-3 border-start border-3 border-primary shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6"> Total Repayments </span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-primary p-3 rounded-circle">
+								<i class="bi bi-bag-check text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-3 border-start border-3 border-secondary shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6"> Total Loan Amt </span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-secondary p-3 rounded-circle">
+								<i class="bi bi-cash-coin text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-3 border-start border-3 border-success shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6"> Approved Loans</span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-success p-3 rounded-circle">
+								<i class="bi bi-check-circle text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-3 border-start border-3 border-info shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6"> Pending Loans </span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-info p-3 rounded-circle">
+								<i class="bi bi-card-list text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-3 border-start border-3 border-danger shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6"> Rejected Loans </span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-danger p-3 rounded-circle">
+								<i class="bi bi-x-octagon text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-3 border-start border-3 border-dark shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6"> Closed Loans</span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-dark p-3 rounded-circle">
+								<i class="bi bi-hand-thumbs-up text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+					<div class="col-3 border-start border-3 border-danger shadow py-3 px-4 mb-3">
+						<div class="d-flex justify-content-between">
+							<div class="d-flex flex-column me-3">
+								<span class="fw-light fs-6">Overdue Payments</span>
+								<span class="fw-semibold fs-4">10</span>
+							</div>
+							<div class="bg-danger p-3 rounded-circle">
+								<i class="bi bi-piggy-bank text-light fs-4"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End main content -->
+		</main>
+
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+			crossorigin="anonymous"></script>
+	</body>
+</html>

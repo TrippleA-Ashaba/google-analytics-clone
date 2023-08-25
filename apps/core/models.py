@@ -20,6 +20,7 @@ class Property(models.Model):
     business = models.ForeignKey(
         Business,
         on_delete=models.CASCADE,
+        related_name="property",
         help_text="Add a business first in None is registered",
     )
     name = models.CharField("Property Name", max_length=100, blank=False, null=False)
@@ -40,7 +41,6 @@ class Page(models.Model):
     path = models.CharField(max_length=500)
     referer = models.URLField(blank=True, null=True)
     user_agent = models.CharField(max_length=500)
-    ip_address = models.GenericIPAddressField()
 
     def __str__(self):
         return f"{self.website} - {self.path} at {self.timestamp}"
@@ -63,7 +63,9 @@ class UserActivity(models.Model):
     website = models.ForeignKey(Property, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     action = models.CharField(max_length=100)
-    session_id = models.CharField(max_length=50)  # For anonymous user session
+    session_id = models.CharField(max_length=50)
+    ip_address = models.GenericIPAddressField()
+    # For anonymous user session
 
     def __str__(self):
         return f"{self.website} - {self.action} at {self.timestamp}"
