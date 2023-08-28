@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from .models import Business, Property, Staff
+from .models import Business, Property, Staff, StaffRoles
 
 User = get_user_model()
 
@@ -23,9 +23,15 @@ class StaffForm(forms.ModelForm):
         model = Staff
         fields = ("user", "role")
 
-    # def __init__(self, user, *args, **kwargs):
-    #     super(StaffForm, self).__init__(*args, **kwargs)
-    #     self.fields["property"].queryset = Property.objects.filter(
-    #         business__created_by=user
-    #     )
-    #     self.fields["user"].queryset = User.objects.exclude(pk=user.pk)
+    def __init__(self, user, *args, **kwargs):
+        super(StaffForm, self).__init__(*args, **kwargs)
+        # user
+        self.fields["user"].queryset = User.objects.exclude(pk=user.pk)
+        self.fields["user"].empty_label = "Select a User . . . . "
+
+        # Roles
+        self.fields["role"].widget.choices = StaffRoles.choices
+
+        # Add 'form-control' class to each field's widget
+        for field_name in self.fields:
+            self.fields[field_name].widget.attrs.update({"class": "form-control"})

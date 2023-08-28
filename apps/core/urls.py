@@ -1,23 +1,21 @@
 from django.urls import path
 
 from .views import (
+    business_detail,
     business_register,
+    dashboard,
     delete_business,
     delete_property,
     edit_business,
     edit_property,
-    edit_staff,
-    dashboard,
     landing_page,
     property_detail,
     property_register,
-    remove_staff,
-    shared_properties,
     show_business,
     show_properties,
     staff_add,
+    usage,
     vanilla,
-    business_detail,
 )
 
 urlpatterns = [
@@ -45,4 +43,6 @@ urlpatterns = [
     path("property/<int:id>/delete/", delete_property, name="delete_property"),
     path("property/<int:id>/edit/", edit_property, name="edit_property"),
     # path("property/shared/", shared_properties, name="shared_properties"),
+    # ================================================
+    path("usage/", usage, name="usage"),
 ]

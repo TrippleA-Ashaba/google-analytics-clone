@@ -1,16 +1,41 @@
+import json
+
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+from django.db.models import Count
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import BusinessForm, PropertyForm, StaffForm
-from .models import Business, Property, Staff, UserActivity, Page, StaffRoles
-from django.db.models import Count
-import time
-from django.http import HttpResponse
-from django.contrib.auth import get_user_model
+from .models import Business, Property, Staff, StaffRoles, UserActivity
 
 # Create your views here.
 User = get_user_model()
+
+
+@csrf_exempt
+def usage(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        message = data.get("message")
+        timestamp = data.get("timestamp")
+        user_agent = data.get("userAgent")
+        user_ip = request.META.get("REMOTE_ADDR")
+        print("==========================================================")
+        print(message)
+        print(timestamp)
+        print(user_agent)
+        print(user_ip)
+        print("==========================================================")
+
+        # Process the data, e.g., store it in a database, log it, etc.
+
+        return JsonResponse({"status": "Event tracked successfully"})
+    else:
+        return JsonResponse({"status": "Invalid request method"})
 
 
 def vanilla(request):
@@ -80,8 +105,15 @@ def business_detail(request, id):
     user = request.user
     business = get_object_or_404(Business, id=id, created_by=user)
     properties = business.property.all().order_by("-created_at")
+    images = list(range(1, 11))
+
     form = PropertyForm()
-    context = {"business": business, "form": form, "properties": properties}
+    context = {
+        "business": business,
+        "form": form,
+        "properties": properties,
+        "images": images,
+    }
     return render(request, "core/business_detail.html", context)
 
 
@@ -214,10 +246,11 @@ def delete_property(request, id):
     if request.method == "DELETE":
         property.delete()
         messages.success(
-            request, "Property deleted successfully", extra_tags="bg-success"
+            request, f"{property} deleted successfully", extra_tags="bg-success"
         )
 
         return HttpResponse(status=200)
+    return HttpResponse(status=500)
 
 
 @login_required
@@ -232,23 +265,52 @@ def shared_properties(request):
 
 @login_required
 def staff_add(request, id):
+    user = request.user
     property = get_object_or_404(Property, id=id)
     users = User.objects.exclude(id=request.user.id)
     roles = StaffRoles.choices
     if request.method == "POST":
-        form = StaffForm(request.POST)
-        print(form.data)
-        print(form.is_valid())
-        if form.is_valid():
-            # form.save()
-            print("=====================")
-            print(form.cleaned_data)
-            messages.success(
-                request, "Staff added successfully", extra_tags="bg-success"
-            )
-        # return redirect("business_detail", id=property.business.id)
+        form = StaffForm(user, request.POST)
 
-    context = {"users": users, "property": property, "roles": roles}
+        if form.is_valid():
+            try:
+                staff, created = Staff.objects.get_or_create(
+                    user=form.cleaned_data["user"], property=property
+                )
+                if created:
+                    messages.success(
+                        request, f"{staff} added successfully", extra_tags="bg-success"
+                    )
+                    return redirect("business_detail", id=property.business.id)
+
+                else:
+                    messages.warning(
+                        request,
+                        f"{staff} is already staff for this property.",
+                        extra_tags="bg-warning",
+                    )
+                    return redirect("business_detail", id=property.business.id)
+
+            except IntegrityError:
+                messages.error(
+                    request,
+                    "An error occurred. Please try again later.",
+                    extra_tags="bg-danger",
+                )
+            return redirect("business_detail", id=property.business.id)
+
+        else:
+            messages.error(
+                request,
+                "Invalid form data. Please check your inputs.",
+                extra_tags="bg-danger",
+            )
+            return redirect("business_detail", id=property.business.id)
+
+    else:
+        form = StaffForm(user)
+
+    context = {"users": users, "property": property, "roles": roles, "form": form}
     return render(request, "partials/staff_add.html", context)
 
 
