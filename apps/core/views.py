@@ -3,12 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import BusinessForm, PropertyForm, StaffForm
-from .models import Business, Property, Staff, UserActivity, Page
+from .models import Business, Property, Staff, UserActivity, Page, StaffRoles
 from django.db.models import Count
 import time
 from django.http import HttpResponse
+from django.contrib.auth import get_user_model
 
 # Create your views here.
+User = get_user_model()
 
 
 def vanilla(request):
@@ -101,7 +103,7 @@ def edit_business(request, id):
         return redirect("business_detail", id=business.id)
 
     context = {"business": business, "form": form}
-    return render(request, "partials/form.html", context)
+    return render(request, "partials/business_edit.html", context)
 
 
 @login_required
@@ -229,20 +231,25 @@ def shared_properties(request):
 
 
 @login_required
-def staff_register(request):
-    user = request.user
+def staff_add(request, id):
+    property = get_object_or_404(Property, id=id)
+    users = User.objects.exclude(id=request.user.id)
+    roles = StaffRoles.choices
     if request.method == "POST":
-        form = StaffForm(user, request.POST)
+        form = StaffForm(request.POST)
+        print(form.data)
+        print(form.is_valid())
         if form.is_valid():
-            form.save()
+            # form.save()
+            print("=====================")
+            print(form.cleaned_data)
             messages.success(
                 request, "Staff added successfully", extra_tags="bg-success"
             )
-            return redirect("show_properties")
+        # return redirect("business_detail", id=property.business.id)
 
-    form = StaffForm(user)
-    context = {"form": form}
-    return render(request, "core/staff_register.html", context)
+    context = {"users": users, "property": property, "roles": roles}
+    return render(request, "partials/staff_add.html", context)
 
 
 @login_required

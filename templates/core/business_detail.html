@@ -47,13 +47,13 @@
 	<div class="my-5">
 		<div class="card border-0">
 			<div class="card-header d-flex justify-content-between">
-				<div>{{ business }} Properties</div>
+				<div>{{ business }}'s Properties</div>
 				<div>
 					<button
 						class="btn btn-sm btn-outline-dark"
 						data-bs-toggle="modal"
 						data-bs-target="#property_register_modal">
-						Add a Property
+						<i class="bi bi-building-add"></i> Add Property
 					</button>
 				</div>
 			</div>
@@ -144,6 +144,24 @@
 									if result.isConfirmed issueRequest()"
 									hx-delete="{% url 'delete_property' property.id %}">
 									<i class="bi bi-trash"></i>
+								</button>
+								<button
+									class="btn btn-sm btn-outline-primary"
+									hx-get="{% url 'staff_add' property.id %}"
+									hx-trigger="edit"
+									_="on click
+									if .editing is not empty
+										Swal.fire({title: 'Already Editing',
+											showCancelButton: true,
+											showConfirmButton:false,
+											text:'Hey!  You are already editing a row!'})
+										if the result's isConfirmed is false
+											halt
+										end
+										send cancel to .editing
+									end
+									trigger edit">
+									<i class="bi bi-person-add"></i>
 								</button>
 							</td>
 						</tr>
