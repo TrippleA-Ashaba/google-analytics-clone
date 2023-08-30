@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "corsheaders",
+    "rest_framework",
     # local
     "apps.accounts",
     "apps.core",

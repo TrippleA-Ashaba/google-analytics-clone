@@ -17,6 +17,7 @@ from .views import (
     usage,
     vanilla,
 )
+from .apiviews import SitePostApiView
 
 urlpatterns = [
     path("vanilla/", vanilla, name="vanilla"),
@@ -45,4 +46,5 @@ urlpatterns = [
     # path("property/shared/", shared_properties, name="shared_properties"),
     # ================================================
     path("usage/", usage, name="usage"),
+    path("api/site_post/", SitePostApiView.as_view(), name="site_post"),
 ]

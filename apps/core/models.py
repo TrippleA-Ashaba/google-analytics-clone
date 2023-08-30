@@ -65,7 +65,6 @@ class UserActivity(models.Model):
     action = models.CharField(max_length=100)
     session_id = models.CharField(max_length=50)
     ip_address = models.GenericIPAddressField()
-    # For anonymous user session
 
     def __str__(self):
         return f"{self.website} - {self.action} at {self.timestamp}"
@@ -90,3 +89,18 @@ class Staff(models.Model):
 
     def __str__(self) -> str:
         return self.user.get_full_name()
+
+
+# DRF view
+class SitePost(models.Model):
+    message = models.CharField(max_length=255, blank=True, null=True)
+    user_agent = models.CharField(max_length=255, blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    path = models.CharField(max_length=255, blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    city = models.CharField(max_length=255, blank=True, null=True)
+    country = models.CharField(max_length=255, blank=True, null=True)
+    hostname = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.message} at {self.timestamp} by {self.user_agent}"
