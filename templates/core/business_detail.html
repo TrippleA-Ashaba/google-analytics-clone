@@ -63,6 +63,7 @@
 						<tr>
 							<th scope="col">Name</th>
 							<th scope="col">Domain</th>
+							<th scope="col">Token</th>
 							<th scope="col">Staff</th>
 							<th scope="col">Action</th>
 						</tr>
@@ -72,6 +73,7 @@
 						<tr>
 							<td>{{ property }}</td>
 							<td>{{ property.domain }}</td>
+							<td>{{property.token}}</td>
 							{% if property.staff.all %}
 							<!--  -->
 							<td>

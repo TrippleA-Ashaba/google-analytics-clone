@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 User = get_user_model()
+import uuid
 
 
 # Create your models here.
@@ -16,6 +17,8 @@ class Business(models.Model):
 
 
 # ======================== Property =================
+
+
 class Property(models.Model):
     business = models.ForeignKey(
         Business,
@@ -27,6 +30,7 @@ class Property(models.Model):
     domain = models.URLField(max_length=225)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:
         verbose_name_plural = "Properties"
@@ -60,14 +64,25 @@ class Event(models.Model):
 
 
 class UserActivity(models.Model):
-    website = models.ForeignKey(Property, on_delete=models.CASCADE)
+    website = models.ForeignKey(
+        Property,
+        related_name="user_activity",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    user_agent = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
-    action = models.CharField(max_length=100)
-    session_id = models.CharField(max_length=50)
+    path = models.CharField(max_length=255)
     ip_address = models.GenericIPAddressField()
+    city = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
+
+    class Meta:
+        unique_together = ("ip_address", "path", "website")
 
     def __str__(self):
-        return f"{self.website} - {self.action} at {self.timestamp}"
+        return f"Website: {self.website} path: {self.path} at {self.timestamp}"
 
 
 # ========================== Staff =============================
@@ -89,18 +104,3 @@ class Staff(models.Model):
 
     def __str__(self) -> str:
         return self.user.get_full_name()
-
-
-# DRF view
-class SitePost(models.Model):
-    message = models.CharField(max_length=255, blank=True, null=True)
-    user_agent = models.CharField(max_length=255, blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    path = models.CharField(max_length=255, blank=True, null=True)
-    ip_address = models.GenericIPAddressField(blank=True, null=True)
-    city = models.CharField(max_length=255, blank=True, null=True)
-    country = models.CharField(max_length=255, blank=True, null=True)
-    hostname = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.message} at {self.timestamp} by {self.user_agent}"

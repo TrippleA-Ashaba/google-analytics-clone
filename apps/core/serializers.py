@@ -1,9 +1,9 @@
 from rest_framework import serializers
 
-from .models import SitePost
+from .models import UserActivity
 
 
-class SitePostSerializer(serializers.ModelSerializer):
+class UserActivitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = SitePost
-        fields = "__all__"
+        model = UserActivity
+        exclude = ("website",)

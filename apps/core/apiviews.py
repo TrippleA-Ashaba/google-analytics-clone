@@ -1,8 +1,20 @@
 from rest_framework import generics
-from .serializers import SitePostSerializer
+from user_agents import parse
+from .models import Property
+from django.db import IntegrityError
+from .serializers import UserActivitySerializer
 
-from .models import SitePost
 
+class UserActivityApiView(generics.CreateAPIView):
+    serializer_class = UserActivitySerializer
 
-class SitePostApiView(generics.CreateAPIView):
-    serializer_class = SitePostSerializer
+    def perform_create(self, serializer, *args, **kwargs):
+        token = self.kwargs.get("token", None)
+        website = Property.objects.get(token=token)
+
+        user_agent_string = serializer.validated_data["user_agent"]
+        user_agent = parse(user_agent_string)
+        try:
+            serializer.save(user_agent=user_agent, website=website)
+        except IntegrityError:
+            pass
