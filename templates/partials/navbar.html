@@ -1,0 +1,35 @@
+<nav class="navbar border border-1 px-2 my-3 rounded">
+	<div class="container-fluid">
+		<form class="d-flex" role="search">
+			<input
+				class="form-control me-2"
+				type="search"
+				id="floatingSearch"
+				placeholder="search..."
+				aria-label="Search" />
+		</form>
+		<div class="dropdown">
+			<a
+				href="#"
+				class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle"
+				id="dropdownUser2"
+				data-bs-toggle="dropdown"
+				aria-expanded="false">
+				<img
+					src="https://github.com/mdo.png"
+					alt=""
+					width="32"
+					height="32"
+					class="rounded-circle me-2" />
+				<strong class="">{{request.user.first_name}}</strong>
+			</a>
+			<ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+				<li><a class="dropdown-item" href="#">New project...</a></li>
+				<li><a class="dropdown-item" href="#">Settings</a></li>
+				<li><a class="dropdown-item" href="#">Profile</a></li>
+				<li><hr class="dropdown-divider" /></li>
+				<li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>

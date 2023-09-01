@@ -70,7 +70,7 @@
 					</thead>
 					<tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
 						{% for property in properties %}
-						<tr>
+						<tr class="{% if property.is_active %}table-success{% endif %}">
 							<td>{{ property }}</td>
 							<td>{{ property.domain }}</td>
 							<td>{{property.token}}</td>
@@ -146,6 +146,13 @@
 									end
 									trigger edit">
 									<i class="bi bi-person-add"></i>
+								</button>
+								<button
+									class="btn btn-sm btn-outline-info"
+									hx-post="{% url 'activate_property' property.id %}"
+									hx-target="#main"
+									hx-swap="outerHTML">
+									<i class="bi bi-toggles2"></i>
 								</button>
 							</td>
 						</tr>

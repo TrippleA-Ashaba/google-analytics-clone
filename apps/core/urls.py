@@ -17,6 +17,7 @@ from .views import (
     staff_add,
     usage,
     vanilla,
+    activate_property,
 )
 
 urlpatterns = [
@@ -43,6 +44,11 @@ urlpatterns = [
     path("property/<int:id>/detail/", property_detail, name="property_detail"),
     path("property/<int:id>/delete/", delete_property, name="delete_property"),
     path("property/<int:id>/edit/", edit_property, name="edit_property"),
+    path(
+        "property/<int:id>/activate_property/",
+        activate_property,
+        name="activate_property",
+    ),
     # path("property/shared/", shared_properties, name="shared_properties"),
     # ================================================
     path("usage/", usage, name="usage"),

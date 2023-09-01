@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import BusinessForm, PropertyForm, StaffForm
@@ -250,6 +250,21 @@ def delete_property(request, id):
         )
 
         return HttpResponse(status=200)
+    return HttpResponse(status=500)
+
+
+@login_required
+def activate_property(request, id):
+    user = request.user
+    property = get_object_or_404(Property, id=id)
+    if request.method == "POST":
+        properties = get_list_or_404(Property, business__created_by=user)
+        for item in properties:
+            item.is_active = False
+            item.save()
+        property.is_active = True
+        property.save()
+        return redirect("business_detail", id=property.business.id)
     return HttpResponse(status=500)
 
 
