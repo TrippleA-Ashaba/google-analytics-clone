@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.db.models import Count, Min, F, OuterRef, Subquery
+from django.db.models import Count, Min, F, OuterRef, Subquery, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -53,6 +53,7 @@ def dashboard(request):
     user = request.user
     businesses = Business.objects.filter(created_by=user).exists()
     site_users = 0
+    new_users = 0
 
     if not businesses:
         return redirect("business_register")
@@ -98,10 +99,20 @@ def dashboard(request):
             .filter(timestamp=F("earliest_timestamp"))
         )
 
-        num_countries = UserActivity.objects.values("country").distinct().count()
+        num_countries = (
+            UserActivity.objects.filter(website=active_website)
+            .values("country")
+            .distinct()
+            .count()
+        )
 
         # Count the number of distinct cities
-        num_cities = UserActivity.objects.values("city").distinct().count()
+        num_cities = (
+            UserActivity.objects.filter(website=active_website)
+            .values("city")
+            .distinct()
+            .count()
+        )
 
         country_counts = (
             UserActivity.objects.filter(website=active_website)
@@ -170,6 +181,7 @@ def dashboard(request):
             common_os_name = "Unknown OS"
 
     context = {
+        "active_website": active_website,
         "site_users": site_users,
         "new_users": new_users,
         "most_common_country_name": most_common_country_name,
@@ -267,6 +279,21 @@ def delete_business(request, id):
         )
 
     return redirect("show_business")
+
+
+@login_required
+def search_business(request):
+    user = request.user
+    if request.method == "POST":
+        businesses = Business.objects.filter(created_by=user).order_by("-created_at")
+        search = request.POST.get("search")
+        if search:
+            businesses = businesses.filter(
+                Q(name__icontains=search) | Q(business_sector__icontains=search)
+            )
+        context = {"businesses": businesses}
+
+        return render(request, "partials/search.html", context)
 
 
 # ============================= Property ==============================

@@ -6,7 +6,16 @@
 
 <!--  -->
 <div class="col-9">
+	<!-- Navbar -->
 	<div class="p-2">{% include 'partials/navbar.html' %}</div>
+
+	<!-- Banner -->
+	<div class="shadow-sm p-3">
+		<div>
+			<h5>Welcome Back <span class="text-primary">{{request.user.get_full_name}}👋</span></h5>
+			<p>{{ active_website }}</p>
+		</div>
+	</div>
 	<!-- Main Content -->
 	<div class="row gap-2 p-2 bg-white rounded">
 		<!--  -->

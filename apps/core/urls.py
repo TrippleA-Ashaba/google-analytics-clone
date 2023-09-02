@@ -18,6 +18,7 @@ from .views import (
     usage,
     vanilla,
     activate_property,
+    search_business,
 )
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     path("business/<int:id>/detail", business_detail, name="business_detail"),
     path("business/<int:id>/delete/", delete_business, name="delete_business"),
     path("business/<int:id>/edit/", edit_business, name="edit_business"),
+    path("search_business/", search_business, name="search_business"),
     # ========== staff =========
     path("property/<int:id>/staff_add/", staff_add, name="staff_add"),
     # path("staff/<int:id>/remove", remove_staff, name="remove_staff"),

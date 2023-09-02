@@ -14,6 +14,17 @@
 		<div class="card-header d-flex justify-content-between">
 			<div>Registered Businesses</div>
 			<div>
+				<input
+					class="form-control"
+					type="search"
+					name="search"
+					placeholder="Begin Typing To Search Users..."
+					hx-post="{% url 'search_business' %}"
+					hx-trigger="keyup changed delay:500ms, search"
+					hx-target="#search_results"
+					hx-indicator=".htmx-indicator" />
+			</div>
+			<div>
 				<button
 					class="btn btn-sm btn-outline-dark"
 					data-bs-toggle="modal"
@@ -31,7 +42,7 @@
 						<th scope="col">Sector</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="search_results">
 					{% for business in businesses %}
 					<tr style="transform: rotate(0)">
 						<th scope="row">{{ forloop.counter }}</th>

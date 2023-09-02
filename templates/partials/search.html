@@ -1,0 +1,17 @@
+{% for business in businesses %}
+<tr style="transform: rotate(0)">
+	<th scope="row">{{ forloop.counter }}</th>
+	<td>
+		<a
+			class="stretched-link"
+			hx-get="{% url 'business_detail' business.id %}"
+			hx-target="#main"
+			hx-swap="outerHTML"
+			hx-push-url="true"
+			style="cursor: pointer">
+			{{ business }}
+		</a>
+	</td>
+	<td>{{ business.business_sector }}</td>
+</tr>
+{% endfor %}

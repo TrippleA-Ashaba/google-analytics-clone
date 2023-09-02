@@ -17,7 +17,7 @@ def parse_user_agent(user_agent):
 if __name__ == "__main__":
     print(
         parse_user_agent(
-            "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10_12_8) AppleWebKit/536.0 (KHTML, like Gecko) Chrome/41.0.846.0 Safari/536.0"
+            "Mozilla/5.0 (iPod; U; CPU iPhone OS 4_1 like Mac OS X; ig-NG) AppleWebKit/531.47.4 (KHTML, like Gecko) Version/4.0.5 Mobile/8B111 Safari/6531.47.4"
         )
     )
     # print(fake.user_agent())
