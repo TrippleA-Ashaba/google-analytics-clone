@@ -1,14 +1,14 @@
 import json
-
+from datetime import datetime, timezone
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.db.models import Count
+from django.db.models import Count, Min, F, OuterRef, Subquery
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
 from django.views.decorators.csrf import csrf_exempt
-
+from .helpers.ua_parser import parse_user_agent
 from .forms import BusinessForm, PropertyForm, StaffForm
 from .models import Business, Property, Staff, StaffRoles, UserActivity
 
@@ -71,9 +71,114 @@ def dashboard(request):
             .annotate(ip_count=Count("ip_address"))
             .count()
         )
+        # Get the current date in the user's timezone (assuming you store timestamps in UTC)
+        current_date = datetime.now(timezone.utc).date()
+
+        # Calculate the start and end timestamps for the current day
+        start_of_day = datetime.combine(
+            current_date, datetime.min.time(), tzinfo=timezone.utc
+        )
+        end_of_day = datetime.combine(
+            current_date, datetime.max.time(), tzinfo=timezone.utc
+        )
+
+        earliest_timestamps = (
+            UserActivity.objects.filter(
+                website=active_website, ip_address=OuterRef("ip_address")
+            )
+            .values("ip_address")
+            .annotate(earliest_timestamp=Min("timestamp"))
+            .values("earliest_timestamp")
+        )
+
+        # Query for new users for the current day
+        new_users = (
+            UserActivity.objects.filter(timestamp__range=(start_of_day, end_of_day))
+            .annotate(earliest_timestamp=Subquery(earliest_timestamps))
+            .filter(timestamp=F("earliest_timestamp"))
+        )
+
+        num_countries = UserActivity.objects.values("country").distinct().count()
+
+        # Count the number of distinct cities
+        num_cities = UserActivity.objects.values("city").distinct().count()
+
+        country_counts = (
+            UserActivity.objects.filter(website=active_website)
+            .values("country")
+            .annotate(user_count=Count("country"))
+            .order_by("-user_count")
+        )
+        most_common_country = country_counts.first()
+
+        city_counts = (
+            UserActivity.objects.filter(website=active_website)
+            .values("city")
+            .annotate(user_count=Count("city"))
+            .order_by("-user_count")
+        )
+        most_common_city = city_counts.first()
+
+        if most_common_country:
+            most_common_country_name = most_common_country["country"]
+        else:
+            most_common_country_name = "None"
+
+        if most_common_city:
+            most_common_city_name = most_common_city["city"]
+        else:
+            most_common_city_name = "None"
+
+            # Query the most common browser, device, and operating system
+        common_browser = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_browser:
+            browser, _, _ = parse_user_agent(common_browser["user_agent"])
+            common_browser_name = browser
+        else:
+            common_browser_name = "Unknown Browser"
+
+        common_device = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_device:
+            _, _, device = parse_user_agent(common_device["user_agent"])
+            common_device_name = device
+        else:
+            common_device_name = "Unknown Device"
+
+        common_os = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_os:
+            _, os, _ = parse_user_agent(common_os["user_agent"])
+            common_os_name = os
+        else:
+            common_os_name = "Unknown OS"
 
     context = {
         "site_users": site_users,
+        "new_users": new_users,
+        "most_common_country_name": most_common_country_name,
+        "most_common_city_name": most_common_city_name,
+        "num_cities": num_cities,
+        "num_countries": num_countries,
+        "common_browser_name": common_browser_name,
+        "common_device_name": common_device_name,
+        "common_os_name": common_os_name,
     }
 
     return render(request, "core/dashboard.html", context)
