@@ -1,8 +1,9 @@
+import uuid
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
 User = get_user_model()
-import uuid
 
 
 # Create your models here.

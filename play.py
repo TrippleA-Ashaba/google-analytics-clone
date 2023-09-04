@@ -1,5 +1,5 @@
-from user_agents import parse
 from faker import Faker
+from user_agents import parse
 
 fake = Faker()
 

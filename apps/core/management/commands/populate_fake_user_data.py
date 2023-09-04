@@ -1,9 +1,10 @@
 # Import necessary modules
+import random
+
 from django.core.management.base import BaseCommand
 from faker import Faker
+
 from apps.core.models import Property, UserActivity
-from user_agents import parse
-import random
 
 
 class Command(BaseCommand):
@@ -45,7 +46,7 @@ class Command(BaseCommand):
             # Create a UserActivity record
             UserActivity.objects.create(
                 website=property,
-                user_agent=parse(fake.user_agent()),
+                user_agent=fake.user_agent(),
                 timestamp=fake.date_time_this_month(),
                 path=path,
                 ip_address=ip_address,

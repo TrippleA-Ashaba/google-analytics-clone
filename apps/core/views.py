@@ -1,45 +1,21 @@
 import json
 from datetime import datetime, timezone
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.db.models import Count, Min, F, OuterRef, Subquery, Q
+from django.db.models import Count, F, Min, OuterRef, Q, Subquery
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
-from .helpers.ua_parser import parse_user_agent
+
 from .forms import BusinessForm, PropertyForm, StaffForm
+from .helpers.ua_parser import parse_user_agent
 from .models import Business, Property, Staff, StaffRoles, UserActivity
 
 # Create your views here.
 User = get_user_model()
-
-
-@csrf_exempt
-def usage(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        message = data.get("message")
-        timestamp = data.get("timestamp")
-        user_agent = data.get("userAgent")
-        user_ip = request.META.get("REMOTE_ADDR")
-        print("==========================================================")
-        print(message)
-        print(timestamp)
-        print(user_agent)
-        print(user_ip)
-        print("==========================================================")
-
-        # Process the data, e.g., store it in a database, log it, etc.
-
-        return JsonResponse({"status": "Event tracked successfully"})
-    else:
-        return JsonResponse({"status": "Invalid request method"})
-
-
-def vanilla(request):
-    return render(request, "vanilla.html")
 
 
 def landing_page(request):
@@ -51,17 +27,17 @@ def landing_page(request):
 @login_required
 def dashboard(request):
     user = request.user
-    businesses = Business.objects.filter(created_by=user).exists()
+
+    has_businesses = Business.objects.filter(created_by=user).exists()
+
     site_users = 0
     new_users = 0
 
-    if not businesses:
+    if not has_businesses:
         return redirect("business_register")
 
     try:
-        active_website = (
-            Property.objects.get(business__created_by=user, is_active=True) or None
-        )
+        active_website = Property.objects.get(business__created_by=user, is_active=True)
     except Property.DoesNotExist:
         active_website = None
 
@@ -163,7 +139,7 @@ def dashboard(request):
         )
         if common_device:
             _, _, device = parse_user_agent(common_device["user_agent"])
-            common_device_name = device
+            common_device_name = device if device != "Other" else "PC"
         else:
             common_device_name = "Unknown Device"
 

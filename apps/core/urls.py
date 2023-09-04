@@ -2,6 +2,7 @@ from django.urls import path
 
 from .apiviews import UserActivityApiView
 from .views import (
+    activate_property,
     business_detail,
     business_register,
     dashboard,
@@ -12,17 +13,13 @@ from .views import (
     landing_page,
     property_detail,
     property_register,
+    search_business,
     show_business,
     show_properties,
     staff_add,
-    usage,
-    vanilla,
-    activate_property,
-    search_business,
 )
 
 urlpatterns = [
-    path("vanilla/", vanilla, name="vanilla"),
     path("", landing_page, name="landing_page"),
     path("dashboard/", dashboard, name="dashboard"),
     # ========== business =============
@@ -53,9 +50,8 @@ urlpatterns = [
     ),
     # path("property/shared/", shared_properties, name="shared_properties"),
     # ================================================
-    path("usage/", usage, name="usage"),
     path(
-        "api/user_activity/<str:token>/",
+        "api/user_activity/<str:web_token>/",
         UserActivityApiView.as_view(),
         name="user_activity",
     ),
