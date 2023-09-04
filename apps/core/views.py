@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timezone
 
 from django.contrib import messages
@@ -6,9 +5,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Count, F, Min, OuterRef, Q, Subquery
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-from django.views.decorators.csrf import csrf_exempt
 
 from .forms import BusinessForm, PropertyForm, StaffForm
 from .helpers.ua_parser import parse_user_agent
@@ -28,12 +26,13 @@ def landing_page(request):
 def dashboard(request):
     user = request.user
 
-    has_businesses = Business.objects.filter(created_by=user).exists()
+    businesses = Business.objects.filter(created_by=user)
+    properties = Property.objects.filter(business__created_by=user)
 
     site_users = 0
     new_users = 0
 
-    if not has_businesses:
+    if not businesses:
         return redirect("business_register")
 
     try:
@@ -157,6 +156,8 @@ def dashboard(request):
             common_os_name = "Unknown OS"
 
     context = {
+        "businesses": businesses,
+        "properties": properties,
         "active_website": active_website,
         "site_users": site_users,
         "new_users": new_users,
@@ -170,6 +171,35 @@ def dashboard(request):
     }
 
     return render(request, "core/dashboard.html", context)
+
+
+# Dashboard Select
+@login_required
+def property_select(request):
+    business_id = int(request.GET.get("business"))
+    properties = Property.objects.filter(business=business_id)
+    print(properties, properties.count())
+    context = {"properties": properties}
+    return render(request, "partials/property_select.html", context)
+
+
+@login_required
+def property_select_activate(request):
+    user = request.user
+    properties = Property.objects.filter(business__created_by=user)
+
+    for property in properties:
+        property.is_active = False
+        property.save()
+
+    property_id = request.GET.get("property") or None
+    print(property_id, "*" * 50)
+    if property_id:
+        property = Property.objects.get(id=property_id)
+        property.is_active = True
+        property.save()
+
+    return redirect("dashboard")
 
 
 # ==================== Business ================================
