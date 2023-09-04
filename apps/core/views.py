@@ -1,20 +1,21 @@
+import json
+from datetime import datetime, timezone
+
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.db import IntegrityError
+from django.db.models import Count, F, Min, OuterRef, Q, Subquery
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import BusinessForm, PropertyForm, StaffForm
-from .models import Business, Property, Staff, UserActivity, Page, StaffRoles
-from django.db.models import Count
-import time
-from django.http import HttpResponse
-from django.contrib.auth import get_user_model
+from .helpers.ua_parser import parse_user_agent
+from .models import Business, Property, Staff, StaffRoles, UserActivity
 
 # Create your views here.
 User = get_user_model()
-
-
-def vanilla(request):
-    return render(request, "vanilla.html")
 
 
 def landing_page(request):
@@ -26,16 +27,17 @@ def landing_page(request):
 @login_required
 def dashboard(request):
     user = request.user
-    businesses = Business.objects.filter(created_by=user).exists()
-    site_users = 0
 
-    if not businesses:
+    has_businesses = Business.objects.filter(created_by=user).exists()
+
+    site_users = 0
+    new_users = 0
+
+    if not has_businesses:
         return redirect("business_register")
 
     try:
-        active_website = (
-            Property.objects.get(business__created_by=user, is_active=True) or None
-        )
+        active_website = Property.objects.get(business__created_by=user, is_active=True)
     except Property.DoesNotExist:
         active_website = None
 
@@ -46,9 +48,125 @@ def dashboard(request):
             .annotate(ip_count=Count("ip_address"))
             .count()
         )
+        # Get the current date in the user's timezone (assuming you store timestamps in UTC)
+        current_date = datetime.now(timezone.utc).date()
+
+        # Calculate the start and end timestamps for the current day
+        start_of_day = datetime.combine(
+            current_date, datetime.min.time(), tzinfo=timezone.utc
+        )
+        end_of_day = datetime.combine(
+            current_date, datetime.max.time(), tzinfo=timezone.utc
+        )
+
+        earliest_timestamps = (
+            UserActivity.objects.filter(
+                website=active_website, ip_address=OuterRef("ip_address")
+            )
+            .values("ip_address")
+            .annotate(earliest_timestamp=Min("timestamp"))
+            .values("earliest_timestamp")
+        )
+
+        # Query for new users for the current day
+        new_users = (
+            UserActivity.objects.filter(timestamp__range=(start_of_day, end_of_day))
+            .annotate(earliest_timestamp=Subquery(earliest_timestamps))
+            .filter(timestamp=F("earliest_timestamp"))
+        )
+
+        num_countries = (
+            UserActivity.objects.filter(website=active_website)
+            .values("country")
+            .distinct()
+            .count()
+        )
+
+        # Count the number of distinct cities
+        num_cities = (
+            UserActivity.objects.filter(website=active_website)
+            .values("city")
+            .distinct()
+            .count()
+        )
+
+        country_counts = (
+            UserActivity.objects.filter(website=active_website)
+            .values("country")
+            .annotate(user_count=Count("country"))
+            .order_by("-user_count")
+        )
+        most_common_country = country_counts.first()
+
+        city_counts = (
+            UserActivity.objects.filter(website=active_website)
+            .values("city")
+            .annotate(user_count=Count("city"))
+            .order_by("-user_count")
+        )
+        most_common_city = city_counts.first()
+
+        if most_common_country:
+            most_common_country_name = most_common_country["country"]
+        else:
+            most_common_country_name = "None"
+
+        if most_common_city:
+            most_common_city_name = most_common_city["city"]
+        else:
+            most_common_city_name = "None"
+
+            # Query the most common browser, device, and operating system
+        common_browser = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_browser:
+            browser, _, _ = parse_user_agent(common_browser["user_agent"])
+            common_browser_name = browser
+        else:
+            common_browser_name = "Unknown Browser"
+
+        common_device = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_device:
+            _, _, device = parse_user_agent(common_device["user_agent"])
+            common_device_name = device if device != "Other" else "PC"
+        else:
+            common_device_name = "Unknown Device"
+
+        common_os = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_os:
+            _, os, _ = parse_user_agent(common_os["user_agent"])
+            common_os_name = os
+        else:
+            common_os_name = "Unknown OS"
 
     context = {
+        "active_website": active_website,
         "site_users": site_users,
+        "new_users": new_users,
+        "most_common_country_name": most_common_country_name,
+        "most_common_city_name": most_common_city_name,
+        "num_cities": num_cities,
+        "num_countries": num_countries,
+        "common_browser_name": common_browser_name,
+        "common_device_name": common_device_name,
+        "common_os_name": common_os_name,
     }
 
     return render(request, "core/dashboard.html", context)
@@ -80,8 +198,15 @@ def business_detail(request, id):
     user = request.user
     business = get_object_or_404(Business, id=id, created_by=user)
     properties = business.property.all().order_by("-created_at")
+    images = list(range(1, 11))
+
     form = PropertyForm()
-    context = {"business": business, "form": form, "properties": properties}
+    context = {
+        "business": business,
+        "form": form,
+        "properties": properties,
+        "images": images,
+    }
     return render(request, "core/business_detail.html", context)
 
 
@@ -130,6 +255,21 @@ def delete_business(request, id):
         )
 
     return redirect("show_business")
+
+
+@login_required
+def search_business(request):
+    user = request.user
+    if request.method == "POST":
+        businesses = Business.objects.filter(created_by=user).order_by("-created_at")
+        search = request.POST.get("search")
+        if search:
+            businesses = businesses.filter(
+                Q(name__icontains=search) | Q(business_sector__icontains=search)
+            )
+        context = {"businesses": businesses}
+
+        return render(request, "partials/search.html", context)
 
 
 # ============================= Property ==============================
@@ -214,10 +354,26 @@ def delete_property(request, id):
     if request.method == "DELETE":
         property.delete()
         messages.success(
-            request, "Property deleted successfully", extra_tags="bg-success"
+            request, f"{property} deleted successfully", extra_tags="bg-success"
         )
 
         return HttpResponse(status=200)
+    return HttpResponse(status=500)
+
+
+@login_required
+def activate_property(request, id):
+    user = request.user
+    property = get_object_or_404(Property, id=id)
+    if request.method == "POST":
+        properties = get_list_or_404(Property, business__created_by=user)
+        for item in properties:
+            item.is_active = False
+            item.save()
+        property.is_active = True
+        property.save()
+        return redirect("business_detail", id=property.business.id)
+    return HttpResponse(status=500)
 
 
 @login_required
@@ -232,23 +388,52 @@ def shared_properties(request):
 
 @login_required
 def staff_add(request, id):
+    user = request.user
     property = get_object_or_404(Property, id=id)
     users = User.objects.exclude(id=request.user.id)
     roles = StaffRoles.choices
     if request.method == "POST":
-        form = StaffForm(request.POST)
-        print(form.data)
-        print(form.is_valid())
-        if form.is_valid():
-            # form.save()
-            print("=====================")
-            print(form.cleaned_data)
-            messages.success(
-                request, "Staff added successfully", extra_tags="bg-success"
-            )
-        # return redirect("business_detail", id=property.business.id)
+        form = StaffForm(user, request.POST)
 
-    context = {"users": users, "property": property, "roles": roles}
+        if form.is_valid():
+            try:
+                staff, created = Staff.objects.get_or_create(
+                    user=form.cleaned_data["user"], property=property
+                )
+                if created:
+                    messages.success(
+                        request, f"{staff} added successfully", extra_tags="bg-success"
+                    )
+                    return redirect("business_detail", id=property.business.id)
+
+                else:
+                    messages.warning(
+                        request,
+                        f"{staff} is already staff for this property.",
+                        extra_tags="bg-warning",
+                    )
+                    return redirect("business_detail", id=property.business.id)
+
+            except IntegrityError:
+                messages.error(
+                    request,
+                    "An error occurred. Please try again later.",
+                    extra_tags="bg-danger",
+                )
+            return redirect("business_detail", id=property.business.id)
+
+        else:
+            messages.error(
+                request,
+                "Invalid form data. Please check your inputs.",
+                extra_tags="bg-danger",
+            )
+            return redirect("business_detail", id=property.business.id)
+
+    else:
+        form = StaffForm(user)
+
+    context = {"users": users, "property": property, "roles": roles, "form": form}
     return render(request, "partials/staff_add.html", context)
 
 

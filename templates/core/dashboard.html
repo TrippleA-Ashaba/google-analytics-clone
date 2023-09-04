@@ -6,8 +6,18 @@
 
 <!--  -->
 <div class="col-9">
+	<!-- Navbar -->
+	<div class="p-2">{% include 'partials/navbar.html' %}</div>
+
+	<!-- Banner -->
+	<div class="shadow-sm p-3">
+		<div>
+			<h5>Welcome Back <span class="text-primary">{{request.user.get_full_name}}👋</span></h5>
+			<p>{{ active_website }}</p>
+		</div>
+	</div>
 	<!-- Main Content -->
-	<div class="row gap-2">
+	<div class="row gap-2 p-2 bg-white rounded">
 		<!--  -->
 		<div class="card" style="width: 10rem">
 			<div class="card-body">
@@ -16,7 +26,7 @@
 					Users
 				</div>
 				<div class="d-flex justify-content-center">
-					<span class="fw-semibold fs-4">{{ site_users }}</span>
+					<span class="fw-semibold fs-5">{{ site_users }}</span>
 				</div>
 			</div>
 		</div>
@@ -28,7 +38,7 @@
 					New Users
 				</div>
 				<div class="d-flex justify-content-center">
-					<span class="fw-semibold fs-4">{{ site_users }}</span>
+					<span class="fw-semibold fs-5">{{ new_users.count }}</span>
 				</div>
 			</div>
 		</div>
@@ -36,11 +46,83 @@
 		<div class="card" style="width: 10rem">
 			<div class="card-body">
 				<div class="text-center">
-					<i class="bi bi-activity text-danger"></i>
-					Events
+					<i class="bi bi-globe text-warning"></i>
+					Countries
 				</div>
 				<div class="d-flex justify-content-center">
-					<span class="fw-semibold fs-4">{{ site_users }}</span>
+					<span class="fw-semibold fs-5">{{ num_countries }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-globe text-info"></i>
+					Common
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ most_common_country_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-ev-front text-danger"></i>
+					Cities
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ num_cities }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-ev-front text-success"></i>
+					Common
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ most_common_city_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-browser-edge"></i>
+					Browser
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ common_browser_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-pc-display text-danger"></i>
+					Device
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ common_device_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-braces text-primary"></i>
+					OS
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ common_os_name }}</span>
 				</div>
 			</div>
 		</div>

@@ -11,6 +11,9 @@
 
 <!--  -->
 <div class="col-9">
+	<!-- Navbar -->
+	<div class="p-2">{% include 'partials/navbar.html' %}</div>
+
 	<div class="w-100">
 		<h5>{{ business }}</h5>
 		<p>{{ business.business_sector }}</p>
@@ -48,6 +51,7 @@
 		<div class="card border-0">
 			<div class="card-header d-flex justify-content-between">
 				<div>{{ business }}'s Properties</div>
+
 				<div>
 					<button
 						class="btn btn-sm btn-outline-dark"
@@ -63,53 +67,37 @@
 						<tr>
 							<th scope="col">Name</th>
 							<th scope="col">Domain</th>
+							<th scope="col">Token</th>
 							<th scope="col">Staff</th>
 							<th scope="col">Action</th>
 						</tr>
 					</thead>
 					<tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
 						{% for property in properties %}
-						<tr>
+						<tr class="{% if property.is_active %}table-success{% endif %}">
 							<td>{{ property }}</td>
 							<td>{{ property.domain }}</td>
+							<td>{{property.token}}</td>
 							{% if property.staff.all %}
 							<!--  -->
 							<td>
 								<ul
 									class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+									{% for staff in property.staff.all %}
 									<li
 										data-bs-toggle="tooltip"
 										data-popup="tooltip-custom"
 										data-bs-placement="top"
 										class="avatar avatar-xs pull-up"
-										title="Lilian Fuller">
-										<img
-											src="{% static '/assets/img/avatars/5.png' %}"
-											alt="Avatar"
-											class="rounded-circle" />
+										title="{{staff}}">
+										<a>
+											<img
+												src="{% static '/assets/img/avatars/' %}{{images|random}}.png"
+												alt="Avatar"
+												class="rounded-circle" />
+										</a>
 									</li>
-									<li
-										data-bs-toggle="tooltip"
-										data-popup="tooltip-custom"
-										data-bs-placement="top"
-										class="avatar avatar-xs pull-up"
-										title="Sophia Wilkerson">
-										<img
-											src="{% static '/assets/img/avatars/6.png' %}"
-											alt="Avatar"
-											class="rounded-circle" />
-									</li>
-									<li
-										data-bs-toggle="tooltip"
-										data-popup="tooltip-custom"
-										data-bs-placement="top"
-										class="avatar avatar-xs pull-up"
-										title="Christina Parker">
-										<img
-											src="{% static '/assets/img/avatars/7.png' %}"
-											alt="Avatar"
-											class="rounded-circle" />
-									</li>
+									{% endfor %}
 								</ul>
 							</td>
 							<!--  -->
@@ -162,6 +150,13 @@
 									end
 									trigger edit">
 									<i class="bi bi-person-add"></i>
+								</button>
+								<button
+									class="btn btn-sm btn-outline-info"
+									hx-post="{% url 'activate_property' property.id %}"
+									hx-target="#main"
+									hx-swap="outerHTML">
+									<i class="bi bi-toggles2"></i>
 								</button>
 							</td>
 						</tr>

@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -16,6 +18,8 @@ class Business(models.Model):
 
 
 # ======================== Property =================
+
+
 class Property(models.Model):
     business = models.ForeignKey(
         Business,
@@ -27,6 +31,7 @@ class Property(models.Model):
     domain = models.URLField(max_length=225)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:
         verbose_name_plural = "Properties"
@@ -60,15 +65,25 @@ class Event(models.Model):
 
 
 class UserActivity(models.Model):
-    website = models.ForeignKey(Property, on_delete=models.CASCADE)
+    website = models.ForeignKey(
+        Property,
+        related_name="user_activity",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    user_agent = models.CharField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    action = models.CharField(max_length=100)
-    session_id = models.CharField(max_length=50)
+    path = models.CharField()
     ip_address = models.GenericIPAddressField()
-    # For anonymous user session
+    city = models.CharField()
+    country = models.CharField()
+
+    class Meta:
+        unique_together = ("ip_address", "path", "website")
 
     def __str__(self):
-        return f"{self.website} - {self.action} at {self.timestamp}"
+        return f"Website: {self.website} path: {self.path} at {self.timestamp}"
 
 
 # ========================== Staff =============================

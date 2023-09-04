@@ -1,28 +1,18 @@
 <tr class="editing" hx-trigger="cancel" hx-get="{% url 'business_detail' property.business.id %}">
 	<td>{{property}}</td>
+	<td>{{property.domain}}</td>
+	<td>{{form.user}} {{form.role}}</td>
 	<td>
-		<select class="form-select" aria-label="Default select example" name="user">
-			<option selected>Select User</option>
-			{% for user in users %}
-			<option value="{{user}}">{{user}}</option>
-			{% endfor %}
-		</select>
-	</td>
-	<td>
-		<select class="form-select" aria-label="Default select example" name="role">
-			<option selected>Select Role</option>
-			{% for role,label in roles %}
-			<option value="{{role}}">{{label}}</option>
-			{% endfor %}
-		</select>
-	</td>
-	<td>
-		<button class="btn btn-sm btn-outline-danger">
+		<button
+			class="btn btn-sm btn-outline-danger"
+			hx-get="{% url 'business_detail' property.business.id %}"
+			hx-target="#main">
 			<i class="bi bi-x-circle-fill"></i>
 		</button>
 		<button
 			class="btn btn-sm btn-dark"
 			hx-post="{% url 'staff_add' property.id %}"
+			hx-target="#main"
 			hx-include="closest tr"
 			hx-swap="outerHTML">
 			<i class="bi bi-check2-all"></i>
