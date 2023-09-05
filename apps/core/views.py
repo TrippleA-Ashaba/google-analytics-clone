@@ -12,6 +12,8 @@ from .forms import BusinessForm, PropertyForm, StaffForm
 from .helpers.ua_parser import parse_user_agent
 from .models import Business, Property, Staff, StaffRoles, UserActivity
 
+from django_htmx.http import HttpResponseClientRefresh
+
 # Create your views here.
 User = get_user_model()
 
@@ -24,6 +26,9 @@ def landing_page(request):
 
 @login_required
 def dashboard(request):
+    if request.htmx:
+        return HttpResponseClientRefresh()
+
     user = request.user
 
     businesses = Business.objects.filter(created_by=user)
@@ -178,7 +183,6 @@ def dashboard(request):
 def property_select(request):
     business_id = int(request.GET.get("business"))
     properties = Property.objects.filter(business=business_id)
-    print(properties, properties.count())
     context = {"properties": properties}
     return render(request, "partials/property_select.html", context)
 
@@ -193,7 +197,6 @@ def property_select_activate(request):
         property.save()
 
     property_id = request.GET.get("property") or None
-    print(property_id, "*" * 50)
     if property_id:
         property = Property.objects.get(id=property_id)
         property.is_active = True
