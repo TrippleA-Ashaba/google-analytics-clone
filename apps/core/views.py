@@ -1,18 +1,19 @@
-import json
 from datetime import datetime, timezone
-
+import json
+from collections import Counter
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db.models import Count, F, Min, OuterRef, Q, Subquery
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-from django.views.decorators.csrf import csrf_exempt
-
+from user_agents import parse
 from .forms import BusinessForm, PropertyForm, StaffForm
 from .helpers.ua_parser import parse_user_agent
 from .models import Business, Property, Staff, StaffRoles, UserActivity
+
+from django_htmx.http import HttpResponseClientRefresh
 
 # Create your views here.
 User = get_user_model()
@@ -26,14 +27,18 @@ def landing_page(request):
 
 @login_required
 def dashboard(request):
+    if request.htmx:
+        return HttpResponseClientRefresh()
+
     user = request.user
 
-    has_businesses = Business.objects.filter(created_by=user).exists()
+    businesses = Business.objects.filter(created_by=user)
+    properties = Property.objects.filter(business__created_by=user)
 
     site_users = 0
     new_users = 0
 
-    if not has_businesses:
+    if not businesses:
         return redirect("business_register")
 
     try:
@@ -156,7 +161,41 @@ def dashboard(request):
         else:
             common_os_name = "Unknown OS"
 
+        user_activities = UserActivity.objects.filter(website=active_website)
+        browser_counts = Counter()
+        device_counts = Counter()
+        os_counts = Counter()
+        for activity in user_activities:
+            user_agent = parse(activity.user_agent)
+
+            browser = user_agent.browser.family
+            device = user_agent.device.family
+            os = user_agent.os.family
+
+            browser_counts[browser] += 1
+            device_counts[device] += 1
+            os_counts[os] += 1
+
+        # Browser data
+        browser_chart_labels = list(browser_counts.keys())
+        browser_chart_counts = list(browser_counts.values())
+
+        # Device data
+        device_chart_labels = list(device_counts.keys())
+
+        if "PC" not in device_chart_labels:
+            device_chart_labels = list(
+                map(lambda x: x.replace("Other", "PC"), device_chart_labels)
+            )
+        device_chart_counts = list(device_counts.values())
+
+        # OS data
+        os_chart_labels = list(os_counts.keys())
+        os_chart_counts = list(os_counts.values())
+
     context = {
+        "businesses": businesses,
+        "properties": properties,
         "active_website": active_website,
         "site_users": site_users,
         "new_users": new_users,
@@ -167,9 +206,42 @@ def dashboard(request):
         "common_browser_name": common_browser_name,
         "common_device_name": common_device_name,
         "common_os_name": common_os_name,
+        "browser_chart_labels": json.dumps(browser_chart_labels),
+        "browser_chart_counts": browser_chart_counts,
+        "device_chart_labels": json.dumps(device_chart_labels),
+        "device_chart_counts": device_chart_counts,
+        "os_chart_labels": json.dumps(os_chart_labels),
+        "os_chart_counts": os_chart_counts,
     }
 
     return render(request, "core/dashboard.html", context)
+
+
+# Dashboard Select
+@login_required
+def property_select(request):
+    business_id = int(request.GET.get("business"))
+    properties = Property.objects.filter(business=business_id)
+    context = {"properties": properties}
+    return render(request, "partials/property_select.html", context)
+
+
+@login_required
+def property_select_activate(request):
+    user = request.user
+    properties = Property.objects.filter(business__created_by=user)
+
+    for property in properties:
+        property.is_active = False
+        property.save()
+
+    property_id = request.GET.get("property") or None
+    if property_id:
+        property = Property.objects.get(id=property_id)
+        property.is_active = True
+        property.save()
+
+    return redirect("dashboard")
 
 
 # ==================== Business ================================

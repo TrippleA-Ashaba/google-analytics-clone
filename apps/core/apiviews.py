@@ -10,12 +10,12 @@ class UserActivityApiView(generics.CreateAPIView):
 
     def perform_create(self, serializer, *args, **kwargs):
         token = self.kwargs.get("web_token", None)
-        print(token, "*" * 50)
+        # print(token, "*" * 50)
         website = Property.objects.get(token=token)
-        print(website, "*" * 50)
+        # print(website, "*" * 50)
 
         user_agent = serializer.validated_data["user_agent"]
-        print(user_agent)
+        # print(user_agent)
         try:
             serializer.save(user_agent=user_agent, website=website)
         except IntegrityError:

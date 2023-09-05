@@ -10,10 +10,14 @@
 	<div class="p-2">{% include 'partials/navbar.html' %}</div>
 
 	<!-- Banner -->
-	<div class="shadow-sm p-3">
+	<div class="shadow-sm p-3 d-flex justify-content-between">
 		<div>
 			<h5>Welcome Back <span class="text-primary">{{request.user.get_full_name}}👋</span></h5>
 			<p>{{ active_website }}</p>
+		</div>
+		<div class="d-flex gap-1">
+			<div>{% include 'partials/business_select.html' %}</div>
+			<div id="property_select">{% include 'partials/property_select.html' %}</div>
 		</div>
 	</div>
 	<!-- Main Content -->
@@ -129,6 +133,7 @@
 		<!--  -->
 	</div>
 	<!--  -->
+	<div>{% include 'partials/charts.html' %}</div>
 	<!--  -->
 	<!--  -->
 </div>

@@ -1,0 +1,14 @@
+{% if properties %}
+<select
+	class="form-select form-select-sm"
+	name="property"
+	hx-get="{% url 'property_select_activate' %}"
+	hx-trigger="change"
+	hx-target="#main"
+	hx-swap="outerHTML">
+	<option selected>Select a property</option>
+	{% for property in properties %}
+	<option value="{{ property.id }}">{{ property.name }}</option>
+	{% endfor %}
+</select>
+{% endif %}

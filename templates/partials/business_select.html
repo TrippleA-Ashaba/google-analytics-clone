@@ -1,0 +1,13 @@
+{% if businesses %}
+<select
+	class="form-select form-select-sm"
+	name="business"
+	hx-get="{% url 'property_select' %}"
+	hx-target="#property_select"
+	hx-trigger="change">
+	<option selected>Select a business</option>
+	{% for business in businesses %}
+	<option value="{{ business.id }}">{{ business.name }}</option>
+	{% endfor %}
+</select>
+{% endif %}

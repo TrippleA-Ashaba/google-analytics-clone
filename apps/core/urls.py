@@ -13,6 +13,8 @@ from .views import (
     landing_page,
     property_detail,
     property_register,
+    property_select,
+    property_select_activate,
     search_business,
     show_business,
     show_properties,
@@ -21,7 +23,14 @@ from .views import (
 
 urlpatterns = [
     path("", landing_page, name="landing_page"),
+    # ============== Dashboard =======================
     path("dashboard/", dashboard, name="dashboard"),
+    path("property_select/", property_select, name="property_select"),
+    path(
+        "property_select_activate/",
+        property_select_activate,
+        name="property_select_activate",
+    ),
     # ========== business =============
     path("business_register/", business_register, name="business_register"),
     path("businesses/", show_business, name="show_business"),
