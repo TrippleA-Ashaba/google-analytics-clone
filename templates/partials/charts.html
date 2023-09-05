@@ -1,5 +1,105 @@
-<div class="my-5 w-25">
-	<div>
-		<canvas id="myChart"></canvas>
+<div class="my-5"></div>
+<div class="my-5 row">
+	<div class="col">
+		<h6 class="text-center">Browser Market Share</h6>
+		<div>
+			<canvas id="browserChart"></canvas>
+		</div>
+	</div>
+	<div class="col">
+		<h6 class="text-center">Device Market Share</h6>
+		<div>
+			<canvas id="deviceChart"></canvas>
+		</div>
+	</div>
+	<div class="col">
+		<h6 class="text-center">OS Market Share</h6>
+		<div>
+			<canvas id="osChart"></canvas>
+		</div>
 	</div>
 </div>
+
+<script>
+
+
+	// Browser Chart
+	const browserCtx = document.getElementById("browserChart");
+	let browserLabels = '{{browser_chart_labels|safe}}';
+	let browserStats = "{{browser_chart_counts}}";
+	browserStats = JSON.parse(browserStats);
+	browserLabels = JSON.parse(browserLabels);
+
+	new Chart(browserCtx, {
+		type: "doughnut",
+		data: {
+			labels: browserLabels,
+			datasets: [
+				{
+					label: "# of Users",
+					data: browserStats,
+					// barThickness: 18,
+					// categoryPercentage:0.4,
+				},
+			],
+		},
+		options: {
+			indexAxis: "y",
+			scales: {
+				y: {
+					beginAtZero: true,
+				},
+			},
+		},
+	});
+
+	// Device Chart
+	const deviceCtx = document.getElementById("deviceChart");
+
+	let deviceLabels = '{{device_chart_labels|safe}}';
+	let deviceStats = "{{device_chart_counts}}";
+	deviceStats = JSON.parse(deviceStats);
+	deviceLabels = JSON.parse(deviceLabels);
+
+	new Chart(deviceCtx, {
+		type: "pie",
+		data: {
+			labels: deviceLabels,
+			datasets: [
+				{
+					label: "# of Users",
+					data: deviceStats,
+					// barThickness: 18,
+					// categoryPercentage:0.4,
+				},
+			],
+		},
+		
+	});
+
+	// OS Chart
+	const osCtx = document.getElementById("osChart");
+
+	let osLabels = '{{os_chart_labels|safe}}';
+	let osStats = "{{os_chart_counts}}";
+	osStats = JSON.parse(osStats);
+	osLabels = JSON.parse(osLabels);
+
+	new Chart(osCtx, {
+		type: "doughnut",
+		data: {
+			labels: osLabels,
+			datasets: [
+				{
+					label: "# of Users",
+					data: osStats,
+					// barThickness: 18,
+					// categoryPercentage:0.4,
+				},
+			],
+		},
+		
+	});
+
+	
+</script>

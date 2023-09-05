@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-
+import json
+from collections import Counter
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -7,7 +8,7 @@ from django.db import IntegrityError
 from django.db.models import Count, F, Min, OuterRef, Q, Subquery
 from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-
+from user_agents import parse
 from .forms import BusinessForm, PropertyForm, StaffForm
 from .helpers.ua_parser import parse_user_agent
 from .models import Business, Property, Staff, StaffRoles, UserActivity
@@ -160,6 +161,38 @@ def dashboard(request):
         else:
             common_os_name = "Unknown OS"
 
+        user_activities = UserActivity.objects.filter(website=active_website)
+        browser_counts = Counter()
+        device_counts = Counter()
+        os_counts = Counter()
+        for activity in user_activities:
+            user_agent = parse(activity.user_agent)
+
+            browser = user_agent.browser.family
+            device = user_agent.device.family
+            os = user_agent.os.family
+
+            browser_counts[browser] += 1
+            device_counts[device] += 1
+            os_counts[os] += 1
+
+        # Browser data
+        browser_chart_labels = list(browser_counts.keys())
+        browser_chart_counts = list(browser_counts.values())
+
+        # Device data
+        device_chart_labels = list(device_counts.keys())
+
+        if "PC" not in device_chart_labels:
+            device_chart_labels = list(
+                map(lambda x: x.replace("Other", "PC"), device_chart_labels)
+            )
+        device_chart_counts = list(device_counts.values())
+
+        # OS data
+        os_chart_labels = list(os_counts.keys())
+        os_chart_counts = list(os_counts.values())
+
     context = {
         "businesses": businesses,
         "properties": properties,
@@ -173,6 +206,12 @@ def dashboard(request):
         "common_browser_name": common_browser_name,
         "common_device_name": common_device_name,
         "common_os_name": common_os_name,
+        "browser_chart_labels": json.dumps(browser_chart_labels),
+        "browser_chart_counts": browser_chart_counts,
+        "device_chart_labels": json.dumps(device_chart_labels),
+        "device_chart_counts": device_chart_counts,
+        "os_chart_labels": json.dumps(os_chart_labels),
+        "os_chart_counts": os_chart_counts,
     }
 
     return render(request, "core/dashboard.html", context)
