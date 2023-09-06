@@ -10,17 +10,17 @@ from .views import (
     delete_property,
     edit_business,
     edit_property,
+    instructions,
     landing_page,
     property_detail,
     property_register,
     property_select,
     property_select_activate,
+    sample_dashboard,
     search_business,
     show_business,
     show_properties,
     staff_add,
-    instructions,
-    sample_dashboard,
 )
 
 urlpatterns = [
