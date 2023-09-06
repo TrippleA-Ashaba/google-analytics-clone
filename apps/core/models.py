@@ -72,12 +72,12 @@ class UserActivity(models.Model):
         null=True,
         blank=True,
     )
-    user_agent = models.CharField()
+    user_agent = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
-    path = models.CharField()
+    path = models.CharField(max_length=255)
     ip_address = models.GenericIPAddressField()
-    city = models.CharField()
-    country = models.CharField()
+    city = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
 
     class Meta:
         unique_together = ("ip_address", "path", "website")

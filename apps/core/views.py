@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
 import json
 from collections import Counter
+from datetime import datetime, timezone
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -8,12 +9,12 @@ from django.db import IntegrityError
 from django.db.models import Count, F, Min, OuterRef, Q, Subquery
 from django.http import HttpResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django_htmx.http import HttpResponseClientRefresh
 from user_agents import parse
+
 from .forms import BusinessForm, PropertyForm, StaffForm
 from .helpers.ua_parser import parse_user_agent
 from .models import Business, Property, Staff, StaffRoles, UserActivity
-
-from django_htmx.http import HttpResponseClientRefresh
 
 # Create your views here.
 User = get_user_model()
@@ -25,26 +26,38 @@ def landing_page(request):
     return render(request, "landing_page.html")
 
 
-@login_required
-def dashboard(request):
+def instructions(request):
+    return render(request, "instructions.html")
+
+
+def sample_dashboard(request):
     if request.htmx:
         return HttpResponseClientRefresh()
 
-    user = request.user
-
-    businesses = Business.objects.filter(created_by=user)
-    properties = Property.objects.filter(business__created_by=user)
+    businesses = Business.objects.filter(name="Sample Business")
+    properties = Property.objects.filter(business=businesses[0])
 
     site_users = 0
     new_users = 0
 
-    if not businesses:
-        return redirect("business_register")
-
     try:
-        active_website = Property.objects.get(business__created_by=user, is_active=True)
+        active_website = Property.objects.get(is_active=True)
     except Property.DoesNotExist:
         active_website = None
+
+    most_common_country_name = "None"
+    most_common_city_name = "None"
+    num_cities = 0
+    num_countries = 0
+    common_browser_name = None
+    common_device_name = None
+    common_os_name = None
+    browser_chart_labels = None
+    browser_chart_counts = 0
+    device_chart_labels = None
+    device_chart_counts = 0
+    os_chart_labels = None
+    os_chart_counts = 0
 
     if active_website:
         site_users = (
@@ -113,8 +126,209 @@ def dashboard(request):
 
         if most_common_country:
             most_common_country_name = most_common_country["country"]
+
+        if most_common_city:
+            most_common_city_name = most_common_city["city"]
         else:
-            most_common_country_name = "None"
+            most_common_city_name = "None"
+
+            # Query the most common browser, device, and operating system
+        common_browser = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_browser:
+            browser, _, _ = parse_user_agent(common_browser["user_agent"])
+            common_browser_name = browser
+        else:
+            common_browser_name = "Unknown Browser"
+
+        common_device = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_device:
+            _, _, device = parse_user_agent(common_device["user_agent"])
+            common_device_name = device if device != "Other" else "PC"
+        else:
+            common_device_name = "Unknown Device"
+
+        common_os = (
+            UserActivity.objects.filter(website=active_website)
+            .values("user_agent")
+            .annotate(count=Count("user_agent"))
+            .order_by("-count")
+            .first()
+        )
+        if common_os:
+            _, os, _ = parse_user_agent(common_os["user_agent"])
+            common_os_name = os
+        else:
+            common_os_name = "Unknown OS"
+
+        user_activities = UserActivity.objects.filter(website=active_website)
+        browser_counts = Counter()
+        device_counts = Counter()
+        os_counts = Counter()
+        for activity in user_activities:
+            user_agent = parse(activity.user_agent)
+
+            browser = user_agent.browser.family
+            device = user_agent.device.family
+            os = user_agent.os.family
+
+            browser_counts[browser] += 1
+            device_counts[device] += 1
+            os_counts[os] += 1
+
+        # Browser data
+        browser_chart_labels = list(browser_counts.keys())
+        browser_chart_counts = list(browser_counts.values())
+
+        # Device data
+        device_chart_labels = list(device_counts.keys())
+
+        if "PC" not in device_chart_labels:
+            device_chart_labels = list(
+                map(lambda x: x.replace("Other", "PC"), device_chart_labels)
+            )
+        device_chart_counts = list(device_counts.values())
+
+        # OS data
+        os_chart_labels = list(os_counts.keys())
+        os_chart_counts = list(os_counts.values())
+
+        context = {
+            "businesses": businesses,
+            "properties": properties,
+            "active_website": active_website,
+            "site_users": site_users,
+            "new_users": new_users,
+            "most_common_country_name": most_common_country_name,
+            "most_common_city_name": most_common_city_name,
+            "num_cities": num_cities,
+            "num_countries": num_countries,
+            "common_browser_name": common_browser_name,
+            "common_device_name": common_device_name,
+            "common_os_name": common_os_name,
+            "browser_chart_labels": json.dumps(browser_chart_labels),
+            "browser_chart_counts": browser_chart_counts,
+            "device_chart_labels": json.dumps(device_chart_labels),
+            "device_chart_counts": device_chart_counts,
+            "os_chart_labels": json.dumps(os_chart_labels),
+            "os_chart_counts": os_chart_counts,
+        }
+    return render(request, "core/dashboard.html", context)
+
+
+@login_required
+def dashboard(request):
+    if request.htmx:
+        return HttpResponseClientRefresh()
+
+    user = request.user
+
+    businesses = Business.objects.filter(created_by=user)
+    properties = Property.objects.filter(business__created_by=user)
+
+    site_users = 0
+    new_users = 0
+
+    if not businesses:
+        return redirect("business_register")
+
+    try:
+        active_website = Property.objects.get(business__created_by=user, is_active=True)
+    except Property.DoesNotExist:
+        active_website = None
+
+    most_common_country_name = "None"
+    most_common_city_name = "None"
+    num_cities = 0
+    num_countries = 0
+    common_browser_name = None
+    common_device_name = None
+    common_os_name = None
+    browser_chart_labels = None
+    browser_chart_counts = 0
+    device_chart_labels = None
+    device_chart_counts = 0
+    os_chart_labels = None
+    os_chart_counts = 0
+
+    if active_website:
+        site_users = (
+            UserActivity.objects.filter(website=active_website)
+            .values("ip_address")
+            .annotate(ip_count=Count("ip_address"))
+            .count()
+        )
+        # Get the current date in the user's timezone (assuming you store timestamps in UTC)
+        current_date = datetime.now(timezone.utc).date()
+
+        # Calculate the start and end timestamps for the current day
+        start_of_day = datetime.combine(
+            current_date, datetime.min.time(), tzinfo=timezone.utc
+        )
+        end_of_day = datetime.combine(
+            current_date, datetime.max.time(), tzinfo=timezone.utc
+        )
+
+        earliest_timestamps = (
+            UserActivity.objects.filter(
+                website=active_website, ip_address=OuterRef("ip_address")
+            )
+            .values("ip_address")
+            .annotate(earliest_timestamp=Min("timestamp"))
+            .values("earliest_timestamp")
+        )
+
+        # Query for new users for the current day
+        new_users = (
+            UserActivity.objects.filter(timestamp__range=(start_of_day, end_of_day))
+            .annotate(earliest_timestamp=Subquery(earliest_timestamps))
+            .filter(timestamp=F("earliest_timestamp"))
+        )
+
+        num_countries = (
+            UserActivity.objects.filter(website=active_website)
+            .values("country")
+            .distinct()
+            .count()
+        )
+
+        # Count the number of distinct cities
+        num_cities = (
+            UserActivity.objects.filter(website=active_website)
+            .values("city")
+            .distinct()
+            .count()
+        )
+
+        country_counts = (
+            UserActivity.objects.filter(website=active_website)
+            .values("country")
+            .annotate(user_count=Count("country"))
+            .order_by("-user_count")
+        )
+        most_common_country = country_counts.first()
+
+        city_counts = (
+            UserActivity.objects.filter(website=active_website)
+            .values("city")
+            .annotate(user_count=Count("city"))
+            .order_by("-user_count")
+        )
+        most_common_city = city_counts.first()
+
+        if most_common_country:
+            most_common_country_name = most_common_country["country"]
 
         if most_common_city:
             most_common_city_name = most_common_city["city"]
