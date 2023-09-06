@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+<!--  -->
+{% block content %}
+<!--  -->
+<div class="col">{% include 'partials/sidebar.html' %}</div>
+
+<!--  -->
+<div class="col-10">
+	<div class="p-2">{% include 'partials/navbar.html' %}</div>
+
+	<div class="card">
+		<div class="card-header d-flex justify-content-between">
+			<div>How to get started</div>
+		</div>
+		<div class="card-body">
+			<ol>
+				<li>
+					Create <code>analytics.js</code> and Paste the code below. Add it to the
+					appropriate directory
+					<pre>
+						<code class="language-js">
+const property_token = "your property token";
+				
+async function fetchData(){try{const t=await fetch("https://ipinfo.io/json?token=d930ee0579e58d"),e=await t.json(),n=window.location.pathname;console.log(e),function(t,e,n,a){fetch(`http://127.0.0.1:4000/api/user_activity/${property_token}/`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({timestamp:new Date,user_agent:navigator.userAgent,ip_address:t,city:e,country:n,path:a})})}(e.ip,e.city,e.country,n)}catch(t){console.error("Error fetching IP address:",t)}}fetchData();
+						</code>
+					</pre>
+				</li>
+				<li>
+					Replace <code>property_token</code> with the token received on creation of your
+					property.
+				</li>
+				<li>
+					Include it where necessary in script tags.
+					<pre>
+						<code>
+&lt;script src="path/to/analytics.js"&gt;&lt;/script&gt;
+						</code>
+					</pre>
+				</li>
+				<li>
+					<span class="fw-bolder">Note:</span> Using the same token on different
+					websites/properties will translate it as one property
+				</li>
+			</ol>
+		</div>
+	</div>
+
+	<div class="my-5">
+		Visit <a href="{% url 'sample_dashboard' %}">sample dashboard</a> to view how it should look
+		like.
+	</div>
+</div>
+
+<!--  -->
+{% endblock %}

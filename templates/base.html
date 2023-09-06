@@ -26,22 +26,15 @@
 		<script src="https://unpkg.com/hyperscript.org@0.9.11" defer></script>
 		<!-- Sweet alerts -->
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-
+		<!--  -->
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/styles/dark.min.css" />
+		<script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+		<script>
+			hljs.highlightAll();
+		</script>
 		<style>
-			.sidebar {
-				position: fixed;
-				top: 0;
-				bottom: 0;
-				left: 0;
-			}
-
-			.main-content {
-				position: relative;
-				margin-left: -100px;
-				padding: 20px;
-				overflow-y: auto;
-				height: calc(100vh - 60px);
-			}
 			.messages {
 				position: fixed;
 				right: 0;
