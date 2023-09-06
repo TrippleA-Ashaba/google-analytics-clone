@@ -1,3 +1,4 @@
+{% if site_users %}
 <div class="my-5"></div>
 <div class="my-5 row">
 	<div class="col">
@@ -19,10 +20,9 @@
 		</div>
 	</div>
 </div>
+{% endif %}
 
 <script>
-
-
 	// Browser Chart
 	const browserCtx = document.getElementById("browserChart");
 	let browserLabels = '{{browser_chart_labels|safe}}';
@@ -74,7 +74,6 @@
 				},
 			],
 		},
-		
 	});
 
 	// OS Chart
@@ -98,8 +97,5 @@
 				},
 			],
 		},
-		
 	});
-
-	
 </script>

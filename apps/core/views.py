@@ -46,6 +46,20 @@ def dashboard(request):
     except Property.DoesNotExist:
         active_website = None
 
+    most_common_country_name = "None"
+    most_common_city_name = "None"
+    num_cities = 0
+    num_countries = 0
+    common_browser_name = None
+    common_device_name = None
+    common_os_name = None
+    browser_chart_labels = None
+    browser_chart_counts = 0
+    device_chart_labels = None
+    device_chart_counts = 0
+    os_chart_labels = None
+    os_chart_counts = 0
+
     if active_website:
         site_users = (
             UserActivity.objects.filter(website=active_website)
@@ -113,8 +127,6 @@ def dashboard(request):
 
         if most_common_country:
             most_common_country_name = most_common_country["country"]
-        else:
-            most_common_country_name = "None"
 
         if most_common_city:
             most_common_city_name = most_common_city["city"]
