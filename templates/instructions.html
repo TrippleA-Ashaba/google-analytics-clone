@@ -21,7 +21,7 @@
 						<code class="language-js">
 const property_token = "your property token";
 				
-async function fetchData(){try{const t=await fetch("https://ipinfo.io/json?token=d930ee0579e58d"),e=await t.json(),n=window.location.pathname;console.log(e),function(t,e,n,a){fetch(`http://127.0.0.1:4000/api/user_activity/${property_token}/`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({timestamp:new Date,user_agent:navigator.userAgent,ip_address:t,city:e,country:n,path:a})})}(e.ip,e.city,e.country,n)}catch(t){console.error("Error fetching IP address:",t)}}fetchData();
+async function fetchData(){try{const t=await fetch("https://ipinfo.io/json?token=d930ee0579e58d"),e=await t.json(),n=window.location.pathname;console.log(e),function(t,e,n,a){fetch(`https://analytics.nugsoftdemos.net/api/user_activity/${property_token}/`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({timestamp:new Date,user_agent:navigator.userAgent,ip_address:t,city:e,country:n,path:a})})}(e.ip,e.city,e.country,n)}catch(t){console.error("Error fetching IP address:",t)}}fetchData();
 						</code>
 					</pre>
 				</li>
