@@ -204,26 +204,26 @@ def sample_dashboard(request):
         os_chart_labels = list(os_counts.keys())
         os_chart_counts = list(os_counts.values())
 
-        context = {
-            "businesses": businesses,
-            "properties": properties,
-            "active_website": active_website,
-            "site_users": site_users,
-            "new_users": new_users,
-            "most_common_country_name": most_common_country_name,
-            "most_common_city_name": most_common_city_name,
-            "num_cities": num_cities,
-            "num_countries": num_countries,
-            "common_browser_name": common_browser_name,
-            "common_device_name": common_device_name,
-            "common_os_name": common_os_name,
-            "browser_chart_labels": json.dumps(browser_chart_labels),
-            "browser_chart_counts": browser_chart_counts,
-            "device_chart_labels": json.dumps(device_chart_labels),
-            "device_chart_counts": device_chart_counts,
-            "os_chart_labels": json.dumps(os_chart_labels),
-            "os_chart_counts": os_chart_counts,
-        }
+    context = {
+        "businesses": businesses,
+        "properties": properties,
+        "active_website": active_website,
+        "site_users": site_users,
+        "new_users": new_users,
+        "most_common_country_name": most_common_country_name,
+        "most_common_city_name": most_common_city_name,
+        "num_cities": num_cities,
+        "num_countries": num_countries,
+        "common_browser_name": common_browser_name,
+        "common_device_name": common_device_name,
+        "common_os_name": common_os_name,
+        "browser_chart_labels": json.dumps(browser_chart_labels),
+        "browser_chart_counts": browser_chart_counts,
+        "device_chart_labels": json.dumps(device_chart_labels),
+        "device_chart_counts": device_chart_counts,
+        "os_chart_labels": json.dumps(os_chart_labels),
+        "os_chart_counts": os_chart_counts,
+    }
     return render(request, "core/dashboard.html", context)
 
 

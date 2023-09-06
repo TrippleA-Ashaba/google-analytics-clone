@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -148,8 +148,8 @@ MEDIA_URL = "/media/"
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
-
-STATICFILES_DIRS = [BASE_DIR / "static/"]
+STATIC_ROOT = "/home/nugsoftdemos/google-analytics-clone/static/"
+# STATICFILES_DIRS = [BASE_DIR / "static/"]
 
 # Crispy forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
