@@ -26,10 +26,12 @@ def landing_page(request):
     return render(request, "landing_page.html")
 
 
+@login_required
 def instructions(request):
     return render(request, "instructions.html")
 
 
+@login_required
 def sample_dashboard(request):
     if request.htmx:
         return HttpResponseClientRefresh()
