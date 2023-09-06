@@ -41,7 +41,7 @@ def sample_dashboard(request):
     new_users = 0
 
     try:
-        active_website = properties[0]
+        active_website = Property.objects.get(is_active=True)
     except Property.DoesNotExist:
         active_website = None
 
