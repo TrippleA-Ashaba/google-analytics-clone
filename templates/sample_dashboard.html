@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+<!--  -->
+{% block content %}
+<!--  -->
+<div class="col">{% include 'partials/sidebar.html' %}</div>
+
+<!--  -->
+<div class="col-10">
+	<!-- Navbar -->
+	<div class="p-2">{% include 'partials/navbar.html' %}</div>
+
+	<!-- Banner -->
+	<div class="shadow-sm p-3 d-flex justify-content-between">
+		<div>
+			<h5>Welcome Back <span class="text-primary">{{request.user.get_full_name}}👋</span></h5>
+			<p>{{ active_website }}</p>
+		</div>
+		<div class="d-flex gap-1">
+			<div id="property_select">{% include 'sample_property_select.html' %}</div>
+		</div>
+	</div>
+	<!-- Main Content -->
+	<div class="row gap-2 p-2 bg-white rounded">
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-people text-success"></i>
+					Users
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ site_users }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-person-plus text-primary"></i>
+					New Users
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ new_users.count }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-globe text-warning"></i>
+					Countries
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ num_countries }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-globe text-info"></i>
+					Common
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ most_common_country_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-ev-front text-danger"></i>
+					Cities
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ num_cities }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-ev-front text-success"></i>
+					Common
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ most_common_city_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-browser-edge"></i>
+					Browser
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ common_browser_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-pc-display text-danger"></i>
+					Device
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ common_device_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+		<div class="card" style="width: 10rem">
+			<div class="card-body">
+				<div class="text-center">
+					<i class="bi bi-braces text-primary"></i>
+					OS
+				</div>
+				<div class="d-flex justify-content-center">
+					<span class="fw-semibold fs-5">{{ common_os_name }}</span>
+				</div>
+			</div>
+		</div>
+		<!--  -->
+	</div>
+	<!--  -->
+	<div>{% include 'partials/charts.html' %}</div>
+	<!--  -->
+	<!--  -->
+</div>
+
+<!-- End main content -->
+{% endblock %}
