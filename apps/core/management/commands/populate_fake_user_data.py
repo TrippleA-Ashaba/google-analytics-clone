@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
         for _ in range(total_records):
             # Randomly select a property
-            property = random.choice(properties)
+            property = Property.objects.get(id=5)
 
             # Generate a unique combination of path and IP for each property
             while True:
