@@ -41,13 +41,32 @@ async function fetchData(){try{const t=await fetch("https://ipinfo.io/json?token
 					<span class="fw-bolder">Note:</span> Using the same token on different
 					websites/properties will translate it as one property
 				</li>
+				<li>
+					<span class="fw-bolder">Note:</span> To track a
+					<span class="fw-bolder text-primary">Wordpress Site</span>:
+					<ol type="i">
+						<li>
+							Install a plugin called
+							<span class="fw-semibold text-success">WpCode</span>
+						</li>
+						<li>
+							On your dashboard sidebar, look for
+							<span class="bg-secondary bg-opacity-25 p-1">Code Snippets</span> and
+							add a new snippet with the code above.
+						</li>
+						<li>
+							Remember to add <code>&lt;script&gt;&lt;/script&gt;</code> since the
+							plugin adds content directly to html.
+						</li>
+					</ol>
+				</li>
 			</ol>
 		</div>
 	</div>
 
 	<div class="my-5">
-		Visit <a href="{% url 'sample_dashboard' %}">sample dashboard</a> to view how it should look
-		like.
+		Visit <a href="{% url 'sample_dashboard' %}">sample dashboard</a> to view how it should
+		look.
 	</div>
 </div>
 
