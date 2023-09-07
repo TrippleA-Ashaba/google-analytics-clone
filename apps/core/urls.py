@@ -21,12 +21,18 @@ from .views import (
     show_business,
     show_properties,
     staff_add,
+    sample_property_select_activate,
 )
 
 urlpatterns = [
     path("", landing_page, name="landing_page"),
     path("instructions/", instructions, name="instructions"),
     path("sample_dashboard/", sample_dashboard, name="sample_dashboard"),
+    path(
+        "sample_property_select_activate/",
+        sample_property_select_activate,
+        name="sample_property_select_activate",
+    ),
     # ============== Dashboard =======================
     path("dashboard/", dashboard, name="dashboard"),
     path("property_select/", property_select, name="property_select"),

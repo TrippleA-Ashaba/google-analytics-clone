@@ -36,14 +36,14 @@ def sample_dashboard(request):
     if request.htmx:
         return HttpResponseClientRefresh()
 
-    businesses = Business.objects.filter(name="Sample Business")
-    properties = Property.objects.filter(business=businesses[0])
+    properties = Property.objects.filter(business__created_by__is_superuser=True)
 
     site_users = 0
     new_users = 0
 
     try:
-        active_website = Property.objects.get(is_active=True)
+        active_website = properties.get(is_active=True)
+        print(active_website)
     except Property.DoesNotExist:
         active_website = None
 
@@ -207,7 +207,6 @@ def sample_dashboard(request):
         os_chart_counts = list(os_counts.values())
 
     context = {
-        "businesses": businesses,
         "properties": properties,
         "active_website": active_website,
         "site_users": site_users,
@@ -226,7 +225,25 @@ def sample_dashboard(request):
         "os_chart_labels": json.dumps(os_chart_labels),
         "os_chart_counts": os_chart_counts,
     }
-    return render(request, "core/dashboard.html", context)
+    return render(request, "sample_dashboard.html", context)
+
+
+@login_required
+def sample_property_select_activate(request):
+    properties = Property.objects.filter(business__created_by__is_superuser=True)
+
+    property_id = request.GET.get("property") or None
+
+    properties.update(is_active=False)
+    if property_id:
+        try:
+            property = Property.objects.get(id=property_id)
+            property.is_active = True
+            property.save()
+        except Property.DoesNotExist:
+            pass
+
+    return redirect("sample_dashboard")
 
 
 @login_required
